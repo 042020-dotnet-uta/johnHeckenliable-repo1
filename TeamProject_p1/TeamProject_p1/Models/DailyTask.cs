@@ -4,9 +4,12 @@ using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
+using TeamProject_p1.Data;
+
+
 namespace TeamProject_p1.Models
 {
-    public class DailyTask
+    public class DailyTask : IEntity
     {
         public int DailyTaskId { get; set; }
 
