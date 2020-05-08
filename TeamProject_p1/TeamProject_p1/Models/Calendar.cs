@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 
 namespace TeamProject_p1.Models
 {
-    public class Calender
+    public class Calendar
     {
-        public int CalenderId { get; set; }
+        public int CalendarId { get; set; }
         public DateTime TaskDate { get; set; }
     }
 }
