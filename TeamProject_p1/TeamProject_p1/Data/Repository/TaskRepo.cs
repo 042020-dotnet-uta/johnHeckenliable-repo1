@@ -17,11 +17,7 @@ namespace TeamProject_p1.Repository
     /// <returns></returns>
     public static DailyTask Create(DailyTask newTask)
     {
-
-      using (var ctx = new ProjectDbContext())
-      {
-
-      }
+      return null;
     }
 
   }

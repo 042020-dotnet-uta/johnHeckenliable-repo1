@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using TeamProject_p1.Data;
+using TeamProject_p1.Data.EFCore;
 
 namespace TeamProject_p1
 {
@@ -29,6 +30,9 @@ namespace TeamProject_p1
 
             services.AddDbContext<ProjectDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("ProjectDbContext")));
+
+            // Registering DI for repositories
+            services.AddScoped<EFCoreDailyTaskRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
