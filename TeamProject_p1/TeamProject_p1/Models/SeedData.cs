@@ -26,7 +26,7 @@ namespace TeamProject_p1.Models
                     return;
                 }
 
-                /*
+                
                 context.CalendarDates.AddRange(
                     new Calendar
                     {
@@ -46,8 +46,8 @@ namespace TeamProject_p1.Models
                          TaskDate = DateTime.Parse("2020-5-9")
                      }
                     );
-                */
-                //context.SaveChanges();
+                
+                context.SaveChanges();
 
                 context.DailyTasks.AddRange(
                     new DailyTask
@@ -85,7 +85,15 @@ namespace TeamProject_p1.Models
                         CalendarItem = context.CalendarDates
                         .Where(d => d.CalendarId == 1)
                         .FirstOrDefault(),
-                        Description = "another task for today"
+                        Description = "Task set to calendar 1"
+                    },
+
+                    new DailyTask
+                    {
+                        CalendarItem = context.CalendarDates
+                        .Where(d => d.CalendarId == 1)
+                        .FirstOrDefault(),
+                        Description = "Another task set to calendar 1"
                     }
                 );
 
