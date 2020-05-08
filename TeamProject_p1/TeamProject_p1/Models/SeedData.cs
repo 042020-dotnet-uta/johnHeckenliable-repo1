@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.CodeAnalysis;
 using System.Threading.Tasks;
 using System.Globalization;
+using System.Collections.Generic;
+using System.Text;
 
 namespace TeamProject_p1.Models
 {
@@ -18,50 +20,74 @@ namespace TeamProject_p1.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<ProjectDbContext>>()))
             {
-
                 // Look for any taskDates or tasks
                 if (context.CalendarDates.Any() || context.DailyTasks.Any())
                 {
                     return;
                 }
 
+                /*
                 context.CalendarDates.AddRange(
                     new Calendar
                     {
+                        //CalendarId = 1,
                         TaskDate = DateTime.Parse("2020-5-7")
                     },
 
                      new Calendar
                      {
+                         //CalendarId = 2,
                          TaskDate = DateTime.Parse("2020-5-8")
                      },
 
                      new Calendar
                      {
+                         //CalendarId = 3,
                          TaskDate = DateTime.Parse("2020-5-9")
                      }
                     );
-                /*
-                context.Tasks.AddRange(
+                */
+                //context.SaveChanges();
+
+                context.DailyTasks.AddRange(
                     new DailyTask
                     {
-                        DateId = 1,
+                        CalendarItem = new Calendar
+                        {
+                            //CalendarId = 1,
+                            TaskDate = DateTime.Parse("2020-5-7")
+                        },
                         Description = "Clean the dishes"
                     },
 
                     new DailyTask
                     {
-                        DateId = 2,
+                        CalendarItem = new Calendar
+                        {
+                            //CalendarId = 2,
+                            TaskDate = DateTime.Parse("2020-5-8")
+                        },
                         Description = "Finish this project"
                     },
 
                     new DailyTask
                     {
-                        DateId = 3,
+                        CalendarItem = new Calendar
+                        {
+                            //CalendarId = 3,
+                            TaskDate = DateTime.Parse("2020-5-9")
+                        },
                         Description = "Feed the dogs"
+                    },
+
+                    new DailyTask
+                    {
+                        CalendarItem = context.CalendarDates
+                        .Where(d => d.CalendarId == 1)
+                        .FirstOrDefault(),
+                        Description = "another task for today"
                     }
                 );
-                */
 
                 context.SaveChanges();
             }

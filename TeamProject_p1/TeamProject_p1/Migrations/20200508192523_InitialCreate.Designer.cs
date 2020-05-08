@@ -10,7 +10,7 @@ using TeamProject_p1.Data;
 namespace TeamProject_p1.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20200508172849_InitialCreate")]
+    [Migration("20200508192523_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
