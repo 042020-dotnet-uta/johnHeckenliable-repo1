@@ -31,19 +31,19 @@ namespace TeamProject_p1.Models
                     new Calendar
                     {
                         //CalendarId = 1,
-                        TaskDate = DateTime.Parse("2020-5-7")
+                        TaskDate = DateTime.Parse("2020-5-1")
                     },
 
                      new Calendar
                      {
                          //CalendarId = 2,
-                         TaskDate = DateTime.Parse("2020-5-8")
+                         TaskDate = DateTime.Parse("2020-5-2")
                      },
 
                      new Calendar
                      {
                          //CalendarId = 3,
-                         TaskDate = DateTime.Parse("2020-5-9")
+                         TaskDate = DateTime.Parse("2020-5-3")
                      }
                     );
                 
@@ -55,7 +55,7 @@ namespace TeamProject_p1.Models
                         CalendarItem = new Calendar
                         {
                             //CalendarId = 1,
-                            TaskDate = DateTime.Parse("2020-5-7")
+                            TaskDate = DateTime.Parse("2020-5-5")
                         },
                         Description = "Clean the dishes"
                     },
@@ -65,7 +65,7 @@ namespace TeamProject_p1.Models
                         CalendarItem = new Calendar
                         {
                             //CalendarId = 2,
-                            TaskDate = DateTime.Parse("2020-5-8")
+                            TaskDate = DateTime.Parse("2020-5-6")
                         },
                         Description = "Finish this project"
                     },
@@ -75,7 +75,7 @@ namespace TeamProject_p1.Models
                         CalendarItem = new Calendar
                         {
                             //CalendarId = 3,
-                            TaskDate = DateTime.Parse("2020-5-9")
+                            TaskDate = DateTime.Parse("2020-5-7")
                         },
                         Description = "Feed the dogs"
                     },
