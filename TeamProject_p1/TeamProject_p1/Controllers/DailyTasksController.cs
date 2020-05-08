@@ -22,7 +22,7 @@ namespace TeamProject_p1.Controllers
         // GET: DailyTasks
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Tasks.ToListAsync());
+            return View(await _context.DailyTasks.ToListAsync());
         }
 
         // GET: DailyTasks/Details/5
@@ -33,7 +33,7 @@ namespace TeamProject_p1.Controllers
                 return NotFound();
             }
 
-            var dailyTask = await _context.Tasks
+            var dailyTask = await _context.DailyTasks
                 .FirstOrDefaultAsync(m => m.DailyTaskId == id);
             if (dailyTask == null)
             {
@@ -54,7 +54,7 @@ namespace TeamProject_p1.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DailyTaskId,DateId,Description")] DailyTask dailyTask)
+        public async Task<IActionResult> Create([Bind("DailyTaskId,Description")] DailyTask dailyTask)
         {
             if (ModelState.IsValid)
             {
@@ -73,7 +73,7 @@ namespace TeamProject_p1.Controllers
                 return NotFound();
             }
 
-            var dailyTask = await _context.Tasks.FindAsync(id);
+            var dailyTask = await _context.DailyTasks.FindAsync(id);
             if (dailyTask == null)
             {
                 return NotFound();
@@ -86,7 +86,7 @@ namespace TeamProject_p1.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DailyTaskId,DateId,Description")] DailyTask dailyTask)
+        public async Task<IActionResult> Edit(int id, [Bind("DailyTaskId,Description")] DailyTask dailyTask)
         {
             if (id != dailyTask.DailyTaskId)
             {
@@ -124,7 +124,7 @@ namespace TeamProject_p1.Controllers
                 return NotFound();
             }
 
-            var dailyTask = await _context.Tasks
+            var dailyTask = await _context.DailyTasks
                 .FirstOrDefaultAsync(m => m.DailyTaskId == id);
             if (dailyTask == null)
             {
@@ -139,15 +139,15 @@ namespace TeamProject_p1.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var dailyTask = await _context.Tasks.FindAsync(id);
-            _context.Tasks.Remove(dailyTask);
+            var dailyTask = await _context.DailyTasks.FindAsync(id);
+            _context.DailyTasks.Remove(dailyTask);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool DailyTaskExists(int id)
         {
-            return _context.Tasks.Any(e => e.DailyTaskId == id);
+            return _context.DailyTasks.Any(e => e.DailyTaskId == id);
         }
     }
 }

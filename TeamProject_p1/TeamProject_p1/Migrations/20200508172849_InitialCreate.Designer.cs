@@ -10,8 +10,8 @@ using TeamProject_p1.Data;
 namespace TeamProject_p1.Migrations
 {
     [DbContext(typeof(ProjectDbContext))]
-    [Migration("20200508160354_InitalCreate")]
-    partial class InitalCreate
+    [Migration("20200508172849_InitialCreate")]
+    partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -21,9 +21,9 @@ namespace TeamProject_p1.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-            modelBuilder.Entity("TeamProject_p1.Models.Calender", b =>
+            modelBuilder.Entity("TeamProject_p1.Models.Calendar", b =>
                 {
-                    b.Property<int>("CalenderId")
+                    b.Property<int>("CalendarId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
@@ -31,9 +31,9 @@ namespace TeamProject_p1.Migrations
                     b.Property<DateTime>("TaskDate")
                         .HasColumnType("datetime2");
 
-                    b.HasKey("CalenderId");
+                    b.HasKey("CalendarId");
 
-                    b.ToTable("TaskDates");
+                    b.ToTable("CalendarDates");
                 });
 
             modelBuilder.Entity("TeamProject_p1.Models.DailyTask", b =>
@@ -43,7 +43,7 @@ namespace TeamProject_p1.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<int>("DateId")
+                    b.Property<int?>("CalendarItemCalendarId")
                         .HasColumnType("int");
 
                     b.Property<string>("Description")
@@ -51,7 +51,16 @@ namespace TeamProject_p1.Migrations
 
                     b.HasKey("DailyTaskId");
 
-                    b.ToTable("Tasks");
+                    b.HasIndex("CalendarItemCalendarId");
+
+                    b.ToTable("DailyTasks");
+                });
+
+            modelBuilder.Entity("TeamProject_p1.Models.DailyTask", b =>
+                {
+                    b.HasOne("TeamProject_p1.Models.Calendar", "CalendarItem")
+                        .WithMany()
+                        .HasForeignKey("CalendarItemCalendarId");
                 });
 #pragma warning restore 612, 618
         }

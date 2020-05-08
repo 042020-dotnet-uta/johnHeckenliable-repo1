@@ -20,28 +20,28 @@ namespace TeamProject_p1.Models
             {
 
                 // Look for any taskDates or tasks
-                if (context.TaskDates.Any() || context.Tasks.Any())
+                if (context.CalendarDates.Any() || context.DailyTasks.Any())
                 {
                     return;
                 }
 
-                context.TaskDates.AddRange(
-                    new Calender
+                context.CalendarDates.AddRange(
+                    new Calendar
                     {
                         TaskDate = DateTime.Parse("2020-5-7")
                     },
 
-                     new Calender
+                     new Calendar
                      {
                          TaskDate = DateTime.Parse("2020-5-8")
                      },
 
-                     new Calender
+                     new Calendar
                      {
                          TaskDate = DateTime.Parse("2020-5-9")
                      }
                     );
-
+                /*
                 context.Tasks.AddRange(
                     new DailyTask
                     {
@@ -60,8 +60,8 @@ namespace TeamProject_p1.Models
                         DateId = 3,
                         Description = "Feed the dogs"
                     }
-
                 );
+                */
 
                 context.SaveChanges();
             }
