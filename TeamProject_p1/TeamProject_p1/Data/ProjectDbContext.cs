@@ -12,7 +12,12 @@ namespace TeamProject_p1.Data
         public ProjectDbContext(DbContextOptions<ProjectDbContext> options)
             : base(options)
         { }
-        public DbSet<DailyTask> Tasks { get; set; }
-        public DbSet<Calender> TaskDates { get; set; }
+        public DbSet<DailyTask> DailyTasks { get; set; }
+        public DbSet<Calendar> CalendarDates { get; set; }
+
+        public void AddTask()
+        {
+            
+        }
     }
 }
