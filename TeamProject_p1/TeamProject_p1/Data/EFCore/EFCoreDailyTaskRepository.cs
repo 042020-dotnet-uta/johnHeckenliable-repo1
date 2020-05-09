@@ -8,7 +8,5 @@ namespace TeamProject_p1.Data.EFCore
     {
 
     }
-
-    
   }
 }
