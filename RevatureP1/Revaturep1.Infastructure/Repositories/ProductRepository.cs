@@ -1,7 +1,7 @@
 ﻿using RevatureP1.Models;
 using System.Linq;
 
-namespace Revaturep1.Infastructure.Repositories
+namespace Revaturep1.DataAccess.Repositories
 {
     public class ProductRepository : GenericRepository<Product>
     {

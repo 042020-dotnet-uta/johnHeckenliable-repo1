@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Revaturep1.Infastructure.Repositories
+namespace Revaturep1.DataAccess.Repositories
 {
     public class CustomerRepository : GenericRepository<Customer>
     {

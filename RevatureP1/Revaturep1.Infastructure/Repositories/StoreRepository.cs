@@ -6,7 +6,7 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 
-namespace Revaturep1.Infastructure.Repositories
+namespace Revaturep1.DataAccess.Repositories
 {
     public class StoreRepository : GenericRepository<Store>
     {
