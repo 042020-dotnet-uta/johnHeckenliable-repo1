@@ -7,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revaturep1.DataAccess.Repositories
+namespace Revaturep1.Infastructure.Repositories
 {
     public class OrderRepository : GenericRepository<Order>
     {

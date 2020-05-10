@@ -1,6 +1,4 @@
-﻿using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using Revaturep1.Domain.Interfaces;
+﻿using Revaturep1.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -9,7 +7,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revaturep1.DataAccess.Repositories
+namespace Revaturep1.Infastructure.Repositories
 {
     public abstract class GenericRepository<T>
         : IRepository<T> where T : class

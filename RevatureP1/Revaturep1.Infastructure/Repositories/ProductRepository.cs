@@ -3,7 +3,7 @@ using RevatureP1.Models;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Revaturep1.DataAccess.Repositories
+namespace Revaturep1.Infastructure.Repositories
 {
     public class ProductRepository : GenericRepository<Product>
     {

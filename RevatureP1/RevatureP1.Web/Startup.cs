@@ -9,9 +9,8 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Revaturep1.Domain.Interfaces;
-using Revaturep1.DataAccess;
-using Revaturep1.DataAccess.Repositories;
+using Revaturep1.Infastructure;
+using Revaturep1.Infastructure.Repositories;
 using RevatureP1.Models;
 
 namespace RevatureP1.Web
@@ -28,10 +27,10 @@ namespace RevatureP1.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddControllersWithViews();
+
             services.AddDbContext<ShoppingDbContext>(options =>
             options.UseSqlServer(Configuration.GetConnectionString("P1Context")));
-
-            services.AddControllersWithViews();
 
             services.AddTransient<IRepository<Customer>, CustomerRepository>();
             services.AddTransient<IRepository<Store>, StoreRepository>();
