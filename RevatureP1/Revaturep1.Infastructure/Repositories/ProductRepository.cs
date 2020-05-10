@@ -1,5 +1,7 @@
-﻿using RevatureP1.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using RevatureP1.Models;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace Revaturep1.DataAccess.Repositories
 {
@@ -9,15 +11,15 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
-        public override Product Update(Product entity)
+        public override async Task<Product> Update(Product entity)
         {
-            var product = _context.Products
-                .Single(p => p.PoductId == entity.PoductId);
+            var product = await _context.Products
+                .SingleAsync(p => p.PoductId == entity.PoductId);
 
             product.ProductDescription = entity.ProductDescription;
             product.Price = entity.Price;
 
-            return base.Update(product);
+            return await base.Update(product);
         }
     }
 }

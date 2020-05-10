@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Revaturep1.DataAccess.Repositories
 {
@@ -14,22 +15,22 @@ namespace Revaturep1.DataAccess.Repositories
             : base(context)
         {
         }
-        public override IEnumerable<Store> Find(Expression<Func<Store, bool>> predicate)
+        public override async Task<IEnumerable<Store>> Find(Expression<Func<Store, bool>> predicate)
         {
-            return _context.Stores
+            return await _context.Stores
                 .Include(s => s.AvailableProducts)
                 .ThenInclude(a => a.Product)
                 .Where(predicate)
-                .ToList();
+                .ToListAsync();
         }
 
-        public override Store Update(Store entity)
+        public override async Task<Store> Update(Store entity)
         {
-            var order = _context.Stores
+            var order = await _context.Stores
                 .Include(s => s.AvailableProducts)
-                .Single(s => s.StoreId == entity.StoreId);
+                .SingleAsync(s => s.StoreId == entity.StoreId);
 
-            return base.Update(entity);
+            return await base.Update(entity);
         }
     }
 }

@@ -1,8 +1,10 @@
-﻿using RevatureP1.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using RevatureP1.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Revaturep1.DataAccess.Repositories
 {
@@ -12,16 +14,18 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
-        public override Customer Update(Customer entity)
+        public override async Task<Customer> Update(Customer entity)
         {
-            var customer = _context.Customers
-                .Single(c => c.CustomerId == entity.CustomerId);
+            var customer = await _context.Customers
+                .SingleAsync(c => c.CustomerId == entity.CustomerId);
+            if (customer != null)
+            {
+                customer.FirstName = entity.FirstName;
+                customer.LastName = entity.LastName;
+                customer.Email = entity.Email;
+            }
 
-            customer.FirstName = entity.FirstName;
-            customer.LastName = entity.LastName;
-            customer.Email = entity.Email;
-
-            return base.Update(customer);
+            return await base.Update(customer);
         }
     }
 }

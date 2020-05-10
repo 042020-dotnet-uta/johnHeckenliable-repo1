@@ -1,9 +1,13 @@
-﻿using Revaturep1.Domain.Interfaces;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
+using Revaturep1.Domain.Interfaces;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Revaturep1.DataAccess.Repositories
 {
@@ -15,37 +19,50 @@ namespace Revaturep1.DataAccess.Repositories
         {
             this._context = context;
         }
-        public virtual T Add(T entity)
+        public async virtual Task<T> Add(T entity)
         {
-            return _context.Add(entity).Entity;
+            var ent = _context.Add(entity).Entity;
+            await _context.SaveChangesAsync();
+            return ent;
         }
 
-        public virtual IEnumerable<T> All()
+        public async virtual Task<IEnumerable<T>> All()
         {
-            return _context.Set<T>()
-                .ToList();
+            return await _context.Set<T>()
+                .ToListAsync();
         }
 
-        public virtual IEnumerable<T> Find(Expression<Func<T, bool>> predicate)
+        public async virtual Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
-            return _context.Set<T>()
+            return await _context.Set<T>()
                 .AsQueryable()
                 .Where(predicate)
-                .ToList();
+                .ToListAsync();
         }
 
-        public virtual T Get(Guid id)
+        public async virtual Task<T> Get(int? id)
         {
-            return _context.Find<T>(id);
+            return await _context.FindAsync<T>(id);
         }
 
-        public virtual T Update(T entity)
+        public async virtual Task<T> Update(T entity)
         {
-            return _context.Update(entity).Entity;
+            var ent = _context.Update(entity).Entity;
+            await _context.SaveChangesAsync();
+            return ent;
+
+            //return await _context.Update(entity).Entity;
         }
-        public virtual void SaveChanges()
+
+        public async virtual Task Delete(int? id)
         {
-            _context.SaveChanges();
+            var ent = await Get(id);
+            _context.Remove(ent);
+            await _context.SaveChangesAsync();
+        }
+        public async virtual void SaveChanges()
+        {
+            await _context.SaveChangesAsync();
         }
     }
 }
