@@ -8,14 +8,15 @@ using Microsoft.EntityFrameworkCore;
 using RevatureP1.Models;
 using Revaturep1.DataAccess;
 using Revaturep1.DataAccess.Repositories;
+using Revaturep1.Domain.Interfaces;
 
 namespace RevatureP1.Web.Controllers
 {
-    public class CustomersRepository : Controller
+    public class CustomersController : Controller
     {
-        private readonly CustomerRepository customerRepo;
+        private readonly IRepository<Customer> customerRepo;
 
-        public CustomersRepository(CustomerRepository customerRepo)
+        public CustomersController(IRepository<Customer> customerRepo)
         {
             this.customerRepo = customerRepo;
         }
@@ -38,7 +39,7 @@ namespace RevatureP1.Web.Controllers
             //var customer = await _context.Customers
             //    .FirstOrDefaultAsync(m => m.CustomerId == id);
             var customer = await customerRepo.Get(id);
-            
+
             if (customer == null)
             {
                 return NotFound();
@@ -137,7 +138,7 @@ namespace RevatureP1.Web.Controllers
 
             //var customer = await _context.Customers
             //    .FirstOrDefaultAsync(m => m.CustomerId == id);
-            var customer =await  customerRepo.Get(id);
+            var customer = await customerRepo.Get(id);
 
             if (customer == null)
             {
@@ -159,6 +160,5 @@ namespace RevatureP1.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
     }
 }

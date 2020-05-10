@@ -4,7 +4,7 @@ using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revaturep1.Infastructure.Repositories
+namespace Revaturep1.Domain.Interfaces
 {
     public interface IRepository<T>
     {

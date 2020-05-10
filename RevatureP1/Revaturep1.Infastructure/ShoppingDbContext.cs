@@ -2,7 +2,7 @@
 using RevatureP1.Models;
 using System;
 
-namespace Revaturep1.Infastructure
+namespace Revaturep1.DataAccess
 {
     public class ShoppingDbContext : DbContext
     {

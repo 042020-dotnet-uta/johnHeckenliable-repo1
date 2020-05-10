@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Revaturep1.Infastructure.Repositories
+namespace Revaturep1.DataAccess.Repositories
 {
     public class CustomerRepository : GenericRepository<Customer>
     {
