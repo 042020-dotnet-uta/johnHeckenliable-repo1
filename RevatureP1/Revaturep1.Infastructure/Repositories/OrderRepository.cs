@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Query.Internal;
 using RevatureP1.Models;
 using System;
 using System.Collections.Generic;
@@ -15,11 +16,33 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
+        public override async Task<IEnumerable<Order>> All()
+        {
+            return await _context.Orders
+                .Include(o => o.ProductsOrdered)
+                .ThenInclude(l => l.Product)
+                .Include(o => o.Store)
+                .Include(o=>o.Customer)
+                .ToListAsync();
+        }
+
+        public override async Task<Order> Get(int? id)
+        {
+            return await _context.Orders
+                .Include(o => o.ProductsOrdered)
+                .ThenInclude(l => l.Product)
+                .Include(o => o.Store)
+                .Include(o => o.Customer)
+                .SingleAsync(o=>o.OrderId == id);
+        }
+
         public override async Task<IEnumerable<Order>> Find(Expression<Func<Order, bool>> predicate)
         {
             return await _context.Orders
                 .Include(o => o.ProductsOrdered)
                 .ThenInclude(l => l.Product)
+                .Include(o => o.Store)
+                .Include(o => o.Customer)
                 .Where(predicate)
                 .ToListAsync();
         }
@@ -28,9 +51,16 @@ namespace Revaturep1.DataAccess.Repositories
         {
             var order = _context.Orders
                 .Include(o => o.ProductsOrdered)
+                .Include(o => o.Store)
+                .Include(o => o.Customer)
                 .SingleAsync(o => o.OrderId == entity.OrderId);
 
             return await base.Update(entity);
+        }
+
+        private bool OrderExists(int id)
+        {
+            return _context.Orders.Any(e => e.OrderId == id);
         }
     }
 }
