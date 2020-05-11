@@ -1,0 +1,36 @@
+
+--Question #1--
+What is a disadvantage of Spiral Model?
+A) This model is too rigid for most situations
+B) The requirements are implemented on the fly without much analysis.
+C) Too dependant on Risk Analysis (Correct)
+D) Flexibility in Requirements
+
+--Question #2--
+Whqt is Big Bang Model good for?
+A) When the amount of work required can be split in to more than one Sprint
+B) Small projects where the development teams are also very small (Correct)
+C) Where working software is more important than extensive documentation
+D) Large, complex projects
+
+--Question #3--
+Which one is true about the Agile Model?
+A) A Project Control List is updated after each iteration to focus developers on specific functionality to implement
+B) Minimal rules, documentation easily employed (Correct)
+C) Development starts with the required money and efforts as the only input
+D) Suitable for handling complex dependencies
+
+--Question #4--
+Which one is part of the 12 Principles of the Agile Manifesto?
+A) Business people and developers rarely work together throughout the project.
+B) A Project Control List is updated after each iteration
+C) Simplicity–the art of maximizing the amount of work not done–is essential (Correct)
+D) Working software is not a primary measure of progress.
+
+--Question #5--
+What Model bases its processes on the unique risk patterns of a given project
+A) Big Bang Model
+B) V-Model
+C) Iterative Model
+D) Spiral Model (Correct)
+
