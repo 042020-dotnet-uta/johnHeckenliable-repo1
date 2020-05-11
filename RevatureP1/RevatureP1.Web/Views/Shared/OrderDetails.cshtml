@@ -1,0 +1,70 @@
+﻿@model RevatureP1.Models.Order
+
+@{
+    ViewData["Title"] = "Order Details";
+}
+
+<h1>Order Details</h1>
+
+<div>
+    <h4>Order @Html.DisplayFor(model => model.OrderId)</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Customer)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Customer.CustomerId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Store)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Store.StoreId)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.OrderDateTime)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.OrderDateTime)
+        </dd>
+    </dl>
+</div>
+<div>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductsOrdered[0].Product)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductsOrdered[0].Quantity)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.ProductsOrdered[0].PricePaid)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.ProductsOrdered)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Product.ProductDescription)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Quantity)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PricePaid)
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</div>
+<div>
+    <!--a asp-action="Edit" asp-route-id="@Model.OrderId">Edit</a> |--><
+    <a asp-action="Index">Back to List</a>
+</div>
