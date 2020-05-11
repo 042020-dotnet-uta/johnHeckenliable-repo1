@@ -1,0 +1,43 @@
+
+--Question #1--
+In order to use the Data Annotations Model Binder in an ASP.NET MVC application, you need to reference which assembly(s)?
+Select all that apply
+[X] System.ComponentModel.DataAnnotations (Correct)
+[] System.Web.Mvc
+[] System.ComponentModel.DataAnnotations.Schema
+[X] Microsoft.Web.Mvc.DataAnnotations (Correct)
+
+--Question #2--
+The default conventional route {controller=Home}/{action=Index}/{id?}:?
+A) Supports a basic and descriptive routing scheme
+B) Is a useful starting point for UI-based apps.
+C) Is the only route template needed for many web UI apps
+D) All of the above (Correct)
+
+--Question #3--
+When two endpoints match through routing, routing must do one of the following
+Select all correct options:
+[] Close the application
+[X] Throw an Exception (Correct)
+[] Notify the user
+[X]Choose the best candidate (Correct)
+
+--Question #4--
+Tag Helpers provide?
+A) A replacement for HTML Helpers
+B) A CSS-friendly development experience
+C) A rich IntelliSense environment for creating HTML and Razor markup (Correct)
+D) None of the above
+
+--Question #5--
+The @addTagHelper directive makes Tag Helpers available to?
+A) The Element
+B) The model
+C) The view (Correct)
+D) The Controller
+
+
+
+
+
+
