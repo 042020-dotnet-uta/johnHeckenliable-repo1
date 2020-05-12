@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using RevatureP1.Models;
 using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
+using RevatureP1.Web.Models;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -159,17 +160,20 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
             var orders = await orderRepo.Find(o => o.StoreId == id);
-
-            //var store = await _context.Stores
-            //    .Include(s => s.AvailableProducts)
-            //    .ThenInclude(p => p.Product)
-            //    .FirstOrDefaultAsync(m => m.StoreId == id);
             if (orders == null)
             {
                 return NotFound();
             }
+            var orderViews = new List<OrderViewModel>();
+            foreach (var order in orders)
+            {
+                orderViews.Add(new OrderViewModel
+                {
+                    Order = order
+                });
+            }
 
-            return View(orders);
+            return View(orderViews);
         }
         public async Task<IActionResult> OrderDetails(int? id)
         {
@@ -183,8 +187,23 @@ namespace RevatureP1.Web.Controllers
             {
                 return NotFound();
             }
+            var orderDetails = new OrderDetailsViewModel
+            {
+                OrderId = order.OrderId,
+                Customer = order.Customer,
+                Store = order.Store,
+                OrderDateTime = order.OrderDateTime
+            };
+            foreach (var item in order.ProductsOrdered)
+            {
+                orderDetails.LineItems.Add(
+                    new LineItemViewModel
+                    {
+                        OrderDetails = item
+                    });
+            }
 
-            return View(order);
+            return View(orderDetails);
         }
 
         private bool StoreExists(int id)

@@ -9,6 +9,7 @@ using RevatureP1.Models;
 using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using RevatureP1.Web.Models;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -33,10 +34,17 @@ namespace RevatureP1.Web.Controllers
         // GET: Orders
         public async Task<IActionResult> Index()
         {
-            //var shoppingDbContext = _context.Orders.Include(o => o.Customer).Include(o => o.Store);
-            //return View(await shoppingDbContext.ToListAsync());
+            var orderViews = new List<OrderViewModel>();
+            var orders = await orderRepo.All();
+            foreach (var order in orders)
+            {
+                orderViews.Add(new OrderViewModel
+                {
+                    Order = order
+                });
+            }
 
-            return View(await orderRepo.All());
+            return View(orderViews);
         }
 
         // GET: Orders/Details/5

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<RevatureP1.Models.Order>
+﻿@model IEnumerable<OrderViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -13,13 +13,19 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Customer)
+                @Html.DisplayNameFor(model => model.Order.Store)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Store)
+                @Html.DisplayNameFor(model => model.Order.Customer)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.OrderDateTime)
+                @Html.DisplayNameFor(model => model.Order.OrderDateTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalItems)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalSale)
             </th>
             <th></th>
         </tr>
@@ -28,18 +34,24 @@
 @foreach (var item in Model) {
         <tr>
             <td>
-                @Html.DisplayFor(modelItem => item.Customer.CustomerId)
+                @Html.DisplayFor(modelItem => item.Order.Store.Location)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Store.StoreId)
+                @Html.DisplayFor(modelItem => item.Order.Customer.CustomerId)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.OrderDateTime)
+                @Html.DisplayFor(modelItem => item.Order.OrderDateTime)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.OrderId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.OrderId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.OrderId">Delete</a>
+                @Html.DisplayFor(modelItem => item.TotalItems)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalSale)
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Order.OrderId">Edit</a> |
+                <a asp-action="Details" asp-route-id="@item.Order.OrderId">Details</a> |
+                <a asp-action="Delete" asp-route-id="@item.Order.OrderId">Delete</a>
             </td>
         </tr>
 }

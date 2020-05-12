@@ -11,6 +11,7 @@ namespace RevatureP1.Models
 	{
 		#region Properties
 		[Key]
+		[Display(Name = "Order Number")]
 		public int OrderId { get; set; }
 
 		[ForeignKey("Customer")]
@@ -21,6 +22,8 @@ namespace RevatureP1.Models
 		public int StoreId { get; set; }
 		public Store Store { get; set; }
 
+		[Display(Name = "Order Date")]
+		[DataType(DataType.Date)]
 		public DateTime OrderDateTime { get; set; }
 
 		public virtual List<OrderDetails> ProductsOrdered { get; set; }
