@@ -12,7 +12,7 @@ namespace RevatureP1.Web.Models
         public OrderDetails OrderDetails { get; set; }
 
         [DataType(DataType.Currency)]
-        public double Total 
+        public double Total
         { 
             get
             { return OrderDetails.PricePaid * OrderDetails.Quantity; }

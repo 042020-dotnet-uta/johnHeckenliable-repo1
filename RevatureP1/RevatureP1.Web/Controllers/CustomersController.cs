@@ -9,6 +9,8 @@ using RevatureP1.Models;
 using Revaturep1.DataAccess;
 using Revaturep1.DataAccess.Repositories;
 using Revaturep1.Domain.Interfaces;
+using RevatureP1.Web.Models;
+using System.Linq.Expressions;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -22,10 +24,48 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Customers
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int? SearchType, string searchString)
         {
-            //return View(await _context.Customers.ToListAsync());
-            return View(await customerRepo.All());
+            IEnumerable<Customer> customers;
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                //Build a predicate to send to the repository to search
+                var predicate = CreatePredicate(SearchType.GetValueOrDefault(), searchString);
+                customers = await customerRepo.Find(predicate);
+            }
+            else
+            {
+                customers = await customerRepo.All();
+            }
+
+            var customersView = new CustomersViewModel
+            {
+                Customers = customers.ToList()
+            };
+            
+            
+            return View(customersView);
+
+        }
+        private Expression<Func<Customer, bool>> CreatePredicate(int SearchType, string searchString)
+        {
+            Expression<Func<Customer, bool>> newFunc;
+            switch (SearchType)
+            {
+                case 0:
+                    newFunc = (c => c.FirstName.Contains(searchString));
+                    break;
+                case 1:
+                    newFunc = (c => c.LastName.Contains(searchString));
+                    break;
+                case 2:
+                    newFunc = (c => c.Email.Contains(searchString));
+                    break;
+                default:
+                    newFunc = null;
+                    break;
+            }
+            return newFunc;
         }
 
         // GET: Customers/Details/5

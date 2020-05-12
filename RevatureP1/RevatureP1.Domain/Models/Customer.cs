@@ -10,9 +10,11 @@ namespace RevatureP1.Models
 	{
 		#region Properties
 		[Key]
+		[Display(Name = "Customer ID")]
 		public int CustomerId { get; set; }
 
 		private string firstName;
+		[Display(Name = "First Name")]
 		public string FirstName
 		{
 			get { return firstName; }
@@ -20,6 +22,7 @@ namespace RevatureP1.Models
 		}
 
 		private string lastName;
+		[Display(Name = "Last Name")]
 		public string LastName
 		{
 			get { return lastName; }
@@ -27,6 +30,7 @@ namespace RevatureP1.Models
 		}
 
 		private string email;
+		[Display(Name = "Email Address")]
 		public string Email
 		{
 			get { return email; }
