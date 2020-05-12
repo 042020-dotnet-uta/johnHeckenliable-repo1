@@ -17,10 +17,13 @@ namespace RevatureP1.Web.Controllers
     public class CustomersController : Controller
     {
         private readonly IRepository<Customer> customerRepo;
+        private readonly IRepository<Order> orderRepo;
 
-        public CustomersController(IRepository<Customer> customerRepo)
+        public CustomersController(IRepository<Customer> customerRepo,
+            IRepository<Order> orderRepo)
         {
             this.customerRepo = customerRepo;
+            this.orderRepo = orderRepo;
         }
 
         // GET: Customers
@@ -110,6 +113,59 @@ namespace RevatureP1.Web.Controllers
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
+        }
+
+        public async Task<IActionResult> OrderHistory(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var orders = await orderRepo.Find(o => o.CusomerId == id);
+            if (orders == null)
+            {
+                return NotFound();
+            }
+            var orderViews = new List<OrderViewModel>();
+            foreach (var order in orders)
+            {
+                orderViews.Add(new OrderViewModel
+                {
+                    Order = order
+                });
+            }
+
+            return View(orderViews);
+        }
+        public async Task<IActionResult> OrderDetails(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var order = await orderRepo.Get(id);
+
+            if (order == null)
+            {
+                return NotFound();
+            }
+            var orderDetails = new OrderDetailsViewModel
+            {
+                OrderId = order.OrderId,
+                Customer = order.Customer,
+                Store = order.Store,
+                OrderDateTime = order.OrderDateTime
+            };
+            foreach (var item in order.ProductsOrdered)
+            {
+                orderDetails.LineItems.Add(
+                    new LineItemViewModel
+                    {
+                        OrderDetails = item
+                    });
+            }
+
+            return View(orderDetails);
         }
 
         // GET: Customers/Edit/5

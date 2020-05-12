@@ -48,8 +48,8 @@
                 @Html.DisplayFor(modelItem => item.Email)
             </td>
             <td>
+                <a asp-action="OrderHistory" asp-route-id="@item.CustomerId">OrderHistory</a> |
                 <a asp-action="Edit" asp-route-id="@item.CustomerId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.CustomerId">Details</a> |
                 <a asp-action="Delete" asp-route-id="@item.CustomerId">Delete</a>
             </td>
         </tr>
