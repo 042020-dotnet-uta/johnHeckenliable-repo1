@@ -15,6 +15,8 @@ namespace RevatureP1.Web.Models
 
         public Store SelectedStore { get; set; }
 
+        public int SelectedProduct { get; set; }
+        public int SelectedQuantity { get; set; }
         public List<LineItemViewModel> SelectedProducts { get; set; }
 
     }

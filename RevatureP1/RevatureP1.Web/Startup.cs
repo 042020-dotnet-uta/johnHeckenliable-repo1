@@ -55,14 +55,6 @@ namespace RevatureP1.Web
                         //options.SlidingExpiration = true;
                     });
 
-            //services.AddAuthentication("CookieAuthentication")
-            //     .AddCookie("CookieAuthentication", config =>
-            //     {
-            //         config.Cookie.Name = "UserLoginCookie";
-            //         config.LoginPath = "/Login/UserLogin";
-            //         config.ExpireTimeSpan = TimeSpan.FromMinutes(1);
-
-            //     });
 
             services.AddAuthorization(options =>
             {
@@ -76,6 +68,8 @@ namespace RevatureP1.Web
                     "LoggedIn",
                     policyBuilder => policyBuilder.RequireRole(new string[] { "Customer", "Admin" }));
             });
+
+            services.AddSession();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -98,6 +92,8 @@ namespace RevatureP1.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            app.UseSession();
 
             app.UseEndpoints(endpoints =>
             {

@@ -76,7 +76,7 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Orders/Create
-        public async Task<IActionResult> Create(int? customerId, int? storeId)
+        public async Task<IActionResult> Create(int? customerId, int? storeId, int? selectedProduct, int? selectedQuantity)
         {
             customerId = 1;
             
@@ -100,23 +100,28 @@ namespace RevatureP1.Web.Controllers
             return View(createOrder);
         }
 
+        public async Task<IActionResult> UpdateLocation([Bind] CreateOrderViewModel order)
+        {
+            return View("Create", order);
+        }
+
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("OrderId,CusomerId,StoreId,OrderDateTime")] Order order)
+        public async Task<IActionResult> Create([Bind] CreateOrderViewModel order)
         {
             if (ModelState.IsValid)
             {
                 //_context.Add(order);
                 //await _context.SaveChangesAsync();
-                order = await orderRepo.Add(order);
+                //order = await orderRepo.Add(order);
 
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
+            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
+            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
             return View(order);
         }
 
