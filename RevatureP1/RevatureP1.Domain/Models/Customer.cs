@@ -13,7 +13,7 @@ namespace RevatureP1.Models
 		[Display(Name = "Customer ID")]
 		public int CustomerId { get; set; }
 
-		private string firstName;
+		private string firstName;              
 		[Display(Name = "First Name")]
 		public string FirstName
 		{
@@ -36,6 +36,8 @@ namespace RevatureP1.Models
 			get { return email; }
 			set { email = value; }
 		}
+
+		//public string Password { get; set; }
 		#endregion
 
 		#region Constructors

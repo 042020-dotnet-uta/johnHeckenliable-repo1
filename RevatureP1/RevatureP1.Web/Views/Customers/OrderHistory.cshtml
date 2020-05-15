@@ -6,9 +6,6 @@
 
 <h1>Order History</h1>
 
-<p>
-    <!--<a asp-action="Create">Create New</a>-->
-</p>
 <table class="table">
     <thead>
         <tr>
@@ -44,9 +41,7 @@
                     @Html.DisplayFor(modelItem => item.TotalSale)
                 </td>
                 <td>
-                    <!--<a asp-action="Edit" asp-route-id="@item.Order.OrderId">Edit</a> |-->
                     <a asp-action="OrderDetails" asp-route-id="@item.Order.OrderId">Details</a>
-                    <!--<a asp-action="Delete" asp-route-id="@item.Order.OrderId">Delete</a>-->
                 </td>
             </tr>
         }

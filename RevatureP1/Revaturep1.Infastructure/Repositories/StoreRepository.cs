@@ -15,6 +15,15 @@ namespace Revaturep1.DataAccess.Repositories
             : base(context)
         {
         }
+
+        public override async Task<Store> Get(int? id)
+        {
+            return await _context.Stores
+                .Include(s => s.AvailableProducts)
+                .ThenInclude(a => a.Product)
+                .Where(s=>s.StoreId == id)
+                .SingleAsync();
+        }
         public override async Task<IEnumerable<Store>> Find(Expression<Func<Store, bool>> predicate)
         {
             return await _context.Stores

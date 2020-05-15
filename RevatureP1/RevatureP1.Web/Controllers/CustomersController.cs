@@ -11,6 +11,7 @@ using Revaturep1.DataAccess.Repositories;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Web.Models;
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -27,6 +28,7 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Customers
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Index(int? SearchType, string searchString)
         {
             IEnumerable<Customer> customers;
@@ -102,7 +104,7 @@ namespace RevatureP1.Web.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("CustomerId,FirstName,LastName,Email")] Customer customer)
+        public async Task<IActionResult> Create( Customer customer)
         {
             if (ModelState.IsValid)
             {
@@ -166,6 +168,33 @@ namespace RevatureP1.Web.Controllers
             }
 
             return View(orderDetails);
+        }
+
+        
+        public async Task<IActionResult> CustomerOrderHistory()
+        {
+            var ident = User.FindFirst("id");
+            if (ident == null)
+            {
+                return NotFound();
+            }
+            var id = int.Parse(ident.Value);
+            var orders = await orderRepo.Find(o => o.CusomerId == id);
+
+            if (orders == null)
+            {
+                return NotFound();
+            }
+            var orderViews = new List<OrderViewModel>();
+            foreach (var order in orders)
+            {
+                orderViews.Add(new OrderViewModel
+                {
+                    Order = order
+                });
+            }
+
+            return View(orderViews);
         }
 
         // GET: Customers/Edit/5

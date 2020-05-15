@@ -10,6 +10,8 @@ using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RevatureP1.Web.Models;
+using System.Collections.Specialized;
+using Microsoft.Extensions.Logging;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -19,16 +21,19 @@ namespace RevatureP1.Web.Controllers
         private readonly IRepository<Product> productRepo;
         private readonly IRepository<Customer> customerRepo;
         private readonly IRepository<Store> storeRepo;
+        private readonly IRepository<Inventory> inventoryRepo;
 
         public OrdersController(IRepository<Order> orderRepo,
             IRepository<Product> productRepo,
             IRepository<Customer> customerRepo,
-            IRepository<Store> storeRepo)
+            IRepository<Store> storeRepo,
+            IRepository<Inventory> inventoryRepo)
         {
             this.orderRepo = orderRepo;
             this.productRepo = productRepo;
             this.customerRepo = customerRepo;
             this.storeRepo = storeRepo;
+            this.inventoryRepo = inventoryRepo;
         }
 
         // GET: Orders
@@ -71,11 +76,28 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Orders/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create(int? customerId, int? storeId)
         {
-            ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId");
-            ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId");
-            return View();
+            customerId = 1;
+            
+            if(customerId == null)
+            {
+                return NotFound();
+            }
+            var createOrder = new CreateOrderViewModel
+            {
+                Customer = await customerRepo.Get(customerId)
+            };
+
+            createOrder.StoreLocations = new SelectList(storeRepo.All().Result, "StoreId", "Location");
+            if(storeId != null)
+            {
+                createOrder.SelectedStore = await storeRepo.Get(storeId);
+                //var inventory = await inventoryRepo.Find(prod => prod.StoreId == storeId);
+                //createOrder.AvailableProducts = inventory.ToList();
+            }
+
+            return View(createOrder);
         }
 
         // POST: Orders/Create

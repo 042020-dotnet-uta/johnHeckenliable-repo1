@@ -21,6 +21,8 @@ GO
 SET IDENTITY_INSERT [dbo].[Customers] ON; 
 
 insert into [dbo].[Customers]([CustomerId], [FirstName], [LastName], [Email])
+values(999, 'Admin', 'Admin', 'admin@email.com');
+insert into [dbo].[Customers]([CustomerId], [FirstName], [LastName], [Email])
 values(1, 'John', 'Doe', 'johndoe@email.com');
 insert into [dbo].[Customers]([CustomerId], [FirstName], [LastName], [Email])
 values(2, 'Adam', 'James', 'aj@email.com');

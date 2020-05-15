@@ -13,6 +13,9 @@ using Revaturep1.Domain.Interfaces;
 using Revaturep1.DataAccess;
 using Revaturep1.DataAccess.Repositories;
 using RevatureP1.Models;
+using RevatureP1.DataAccess.Repositories;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Http;
 
 namespace RevatureP1.Web
 {
@@ -37,6 +40,42 @@ namespace RevatureP1.Web
             services.AddTransient<IRepository<Store>, StoreRepository>();
             services.AddTransient<IRepository<Order>, OrderRepository>();
             services.AddTransient<IRepository<Product>, ProductRepository>();
+            services.AddTransient<IRepository<Inventory>, InventoryRepository>();
+
+            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+            //        .AddCookie();
+            services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                    .AddCookie(options =>
+                    {
+                        options.Cookie.HttpOnly = true;
+                        options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+                        options.LoginPath = "/Login/UserLogin";
+                        //options.AccessDeniedPath = "/Account/AccessDenied";
+                        //options.SlidingExpiration = true;
+                    });
+
+            //services.AddAuthentication("CookieAuthentication")
+            //     .AddCookie("CookieAuthentication", config =>
+            //     {
+            //         config.Cookie.Name = "UserLoginCookie";
+            //         config.LoginPath = "/Login/UserLogin";
+            //         config.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+
+            //     });
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy(
+                    "Admin",
+                    policyBuilder => policyBuilder.RequireRole("Admin"));
+                options.AddPolicy(
+                    "Customer",
+                    policyBuilder => policyBuilder.RequireRole("Customer")); 
+                options.AddPolicy(
+                    "LoggedIn",
+                    policyBuilder => policyBuilder.RequireRole(new string[] { "Customer", "Admin" }));
+            });
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -57,6 +96,7 @@ namespace RevatureP1.Web
 
             app.UseRouting();
 
+            app.UseAuthentication();
             app.UseAuthorization();
 
             app.UseEndpoints(endpoints =>
@@ -64,6 +104,11 @@ namespace RevatureP1.Web
                 endpoints.MapControllerRoute(
                     name: "default",
                     pattern: "{controller=Home}/{action=Index}/{id?}");
+            });
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+                //endpoints.MapRazorPages();
             });
         }
     }
