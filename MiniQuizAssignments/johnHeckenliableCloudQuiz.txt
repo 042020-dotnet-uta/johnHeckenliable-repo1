@@ -1,0 +1,39 @@
+
+
+--Question #1--
+Cloud Scaling is?
+A) the process of moving to a larger instance or upgrading resources.
+B) the process of adding or removing cloud computing resources as you need them (CORRECT)
+C) the process of adding more instances to a service
+D) Scaling that is performed autmatically using an API
+
+--Question #2--
+Customer-based SLA:
+A) An agreement for all customers using the services being delivered by the service provider.
+B) The SLA is split into the different levels, each addressing different set of customers for the same services, in the same SLA.
+C) It specifies the type of service and any additional details of type of service to be provided.
+D) An agreement with an individual customer group, covering all the services they use. (CORRECT)
+
+--Question #3--
+Whats a common Infastructure as a Service(IaaS) business scenario?
+A) Analytics or business intelligence.
+B) Website hosting.  (CORRECT)
+C) Use free client software.
+D) Development framework.
+
+--Question #4--
+Whats an advantage of Platform as a service (PaaS)?
+A) Better security.
+B) Gain access to sophisticated applications.
+C) Use sophisticated tools affordably. (CORRECT)
+D) Access app data from anywhere.
+
+--Question #5--
+What is a Serverless API gateway?
+A) A centralized, fully managed entry point for serverless backend services. (CORRECRT)
+B) Developers bring their own containers to fully managed, Kubernetes-orchestrated clusters
+C) A pay-per-execution model with sub-second billing charges only for the time and resources it takes to execute the code.
+D) A low-code/no-code approach to simplify orchestration of combined tasks.
+
+
+
