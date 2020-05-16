@@ -11,10 +11,10 @@ using TeamProject_p1.Data.EFCore;
 
 namespace TeamProject_p1.Controllers
 {
-  public class DailyTasksController : DBController<DailyTask, EFCoreDailyTaskRepository>
+  public class DailyTasksController : DBController<DailyTask, IRepository<DailyTask>>
   {
     IRepository<DailyTask> dailyRepo;
-    public DailyTasksController(EFCoreDailyTaskRepository repository) : base(repository)
+    public DailyTasksController(IRepository<DailyTask> repository) : base(repository)
     {
       dailyRepo = repository;
     }
@@ -50,7 +50,7 @@ namespace TeamProject_p1.Controllers
     // }
 
     // // POST: DailyTasks/Create
-    // // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+    // // To protect from overposting attacks, enable the specific properties you want to bind to, for
     // // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     // [HttpPost]
     // [ValidateAntiForgeryToken]
@@ -82,7 +82,7 @@ namespace TeamProject_p1.Controllers
     // }
 
     // // POST: DailyTasks/Edit/5
-    // // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+    // // To protect from overposting attacks, enable the specific properties you want to bind to, for
     // // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
     // [HttpPost]
     // [ValidateAntiForgeryToken]
