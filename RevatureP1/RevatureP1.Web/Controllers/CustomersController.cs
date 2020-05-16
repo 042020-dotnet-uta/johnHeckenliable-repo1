@@ -12,6 +12,8 @@ using Revaturep1.Domain.Interfaces;
 using RevatureP1.Web.Models;
 using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
+using RevatureP1.Web.Helpers;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -94,7 +96,8 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Customers/Create
-        public IActionResult Create()
+        [Authorize(Roles = "Admin")]
+        public IActionResult CreateNew()
         {
             return View();
         }
@@ -104,15 +107,17 @@ namespace RevatureP1.Web.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create( Customer customer)
+        [Authorize(Roles = "Admin")]
+        public async Task<IActionResult> CreateNew(Customer customer)
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(customer);
-                //await _context.SaveChangesAsync();
-                customer = await customerRepo.Add(customer);
+                if (customer != null)
+                {
+                    var cust = await customerRepo.Add(customer);
 
-                return RedirectToAction(nameof(Index));
+                    return RedirectToAction("Index", "Customer");
+                }
             }
             return View(customer);
         }
@@ -121,7 +126,12 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                var customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
+                if (customer == null)
+                {
+                    return NotFound();
+                }
+                id = customer.CustomerId;
             }
             var orders = await orderRepo.Find(o => o.CusomerId == id);
             if (orders == null)
@@ -179,6 +189,9 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
             var id = int.Parse(ident.Value);
+
+            return RedirectToAction("OrderHistory", id);
+
             var orders = await orderRepo.Find(o => o.CusomerId == id);
 
             if (orders == null)

@@ -15,6 +15,7 @@ namespace RevatureP1.Models
 
 		private string firstName;              
 		[Display(Name = "First Name")]
+		[Required, StringLength(25)]
 		public string FirstName
 		{
 			get { return firstName; }
@@ -23,6 +24,7 @@ namespace RevatureP1.Models
 
 		private string lastName;
 		[Display(Name = "Last Name")]
+		[Required, StringLength(50)]
 		public string LastName
 		{
 			get { return lastName; }
@@ -31,6 +33,7 @@ namespace RevatureP1.Models
 
 		private string email;
 		[Display(Name = "Email Address")]
+		[Required, DataType(DataType.EmailAddress)]
 		public string Email
 		{
 			get { return email; }

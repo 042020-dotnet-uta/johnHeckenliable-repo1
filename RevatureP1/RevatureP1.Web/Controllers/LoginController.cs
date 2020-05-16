@@ -1,8 +1,11 @@
 ﻿
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Models;
+using RevatureP1.Web.Helpers;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
@@ -25,26 +28,19 @@ namespace RevatureP1.Web.Controllers
         }
 
         [HttpPost]
-        public ActionResult UserLogin([Bind]string email)
+        public ActionResult UserLogin(string email)
         {
-            var cust = customerRepo.Find(cust => cust.Email == email).Result.FirstOrDefault();
-
-            if (cust != null)
+            if (ModelState.IsValid)
             {
-                var userClaims = new List<Claim>()
+                var cust = customerRepo.Find(cust => cust.Email == email).Result.FirstOrDefault();
+
+                if (cust != null)
                 {
-                    new Claim("Id", cust.CustomerId.ToString()),
-                    new Claim(ClaimTypes.Role, cust.Email.StartsWith("admin") ? "Admin" : "Customer")
-                };
-
-                var identity = new ClaimsIdentity(userClaims, "User Identity");
-
-                var userPrincipal = new ClaimsPrincipal(new[] { identity });
-                HttpContext.SignInAsync(userPrincipal);
-
-                return RedirectToAction("Index", "Home");
+                    CreateClaimIdentity(email);
+                    AddUserToSession(cust);
+                    return RedirectToAction("Index", "Home");
+                }
             }
-
             return View();
         }
 
@@ -54,28 +50,37 @@ namespace RevatureP1.Web.Controllers
             return View();
         }
         [HttpPost]
-        public async Task<ActionResult> CreateNew([Bind] Customer user)
+        [ValidateAntiForgeryToken]
+        public async Task<ActionResult> CreateNew(Customer user)
         {
-
-            if (user != null)
+            if (ModelState.IsValid)
             {
-                var cust = await customerRepo.Add(user);
-
-                var userClaims = new List<Claim>()
+                if (user != null)
                 {
-                    new Claim("Id", cust.CustomerId.ToString()),
-                    new Claim(ClaimTypes.Role, user.Email.StartsWith("admin") ? "Admin" : "Customer")
-                };
+                    var cust = await customerRepo.Add(user);
 
-                var identity = new ClaimsIdentity(userClaims, "User Identity");
-
-                var userPrincipal = new ClaimsPrincipal(new[] { identity });
-                await HttpContext.SignInAsync(userPrincipal);
-
-                return RedirectToAction("Index", "Home");
+                    CreateClaimIdentity(user.Email);
+                    AddUserToSession(cust);
+                    return RedirectToAction("Index", "Home");
+                }
             }
-
             return View(user);
+        }
+
+        private async void CreateClaimIdentity(string email)
+        {
+            var userClaims = new List<Claim>()
+                {
+                    new Claim(ClaimTypes.Role, email.StartsWith("admin") ? "Admin" : "Customer")
+                }; 
+            var identity = new ClaimsIdentity(userClaims, "User Identity");
+
+            var userPrincipal = new ClaimsPrincipal(new[] { identity });
+            await HttpContext.SignInAsync(userPrincipal);
+        }
+        private void AddUserToSession(Customer cust)
+        {
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", cust);
         }
     }
 }

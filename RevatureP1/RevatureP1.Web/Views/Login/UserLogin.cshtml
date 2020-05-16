@@ -5,8 +5,6 @@
 }
 
 <h1>Customer Login</h1>
-
-<!--<h4>Customer</h4>-->
 <hr />
 <div class="row">
     <div class="col-md-4">
@@ -40,4 +38,6 @@
     </div>
 </div>
 
-
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial"); }
+}

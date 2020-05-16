@@ -1,17 +1,12 @@
-﻿using System;
+﻿
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using RevatureP1.Models;
-using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
 using RevatureP1.Web.Models;
-using System.Collections.Specialized;
-using Microsoft.Extensions.Logging;
+using RevatureP1.Web.Helpers;
 
 namespace RevatureP1.Web.Controllers
 {
@@ -76,41 +71,77 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Orders/Create
-        public async Task<IActionResult> Create(int? customerId, int? storeId, int? selectedProduct, int? selectedQuantity)
+        public async Task<IActionResult> Create(int? storeId)
         {
-            customerId = 1;
+            var customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
             
-            if(customerId == null)
+            if(customer == null)
             {
                 return NotFound();
             }
             var createOrder = new CreateOrderViewModel
             {
-                Customer = await customerRepo.Get(customerId)
+                Customer = customer
             };
+            
+            if (storeId == null)
+                storeId = SessionHelper.GetObjectFromJson<int?>(HttpContext.Session, "SelectedStore");
+            else
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", storeId);
 
-            createOrder.StoreLocations = new SelectList(storeRepo.All().Result, "StoreId", "Location");
-            if(storeId != null)
+            var stores = await storeRepo.All();
+            createOrder.StoreLocations = new SelectList(stores, "StoreId", "Location");
+
+            if (storeId != null)
             {
-                createOrder.SelectedStore = await storeRepo.Get(storeId);
-                //var inventory = await inventoryRepo.Find(prod => prod.StoreId == storeId);
-                //createOrder.AvailableProducts = inventory.ToList();
+                var store = await storeRepo.Get(storeId);
+                if (null == store)
+                    return NotFound();
+                createOrder.SelectedStore = store;
+
+                //Temp for testing
+                var lineItem = new LineItemViewModel
+                {
+                    OrderDetails = new OrderDetails
+                    {
+                        ProductId = 1,
+                        Product = await productRepo.Get(1),
+                        PricePaid = 12.99,
+                        Quantity = 2
+                    }
+                };
+                createOrder.SelectedProducts.Add(lineItem);
+                lineItem = new LineItemViewModel
+                {
+                    OrderDetails = new OrderDetails
+                    {
+                        ProductId = 3,
+                        Product = await productRepo.Get(3),
+                        PricePaid = 10.99,
+                        Quantity = 4
+                    }
+                };
+                createOrder.SelectedProducts.Add(lineItem);
             }
 
             return View(createOrder);
         }
+        //public async Task<IActionResult> UpdateLocation(int? storeId)
+        //{
+        //    if(storeId != null)
+        //    {
+        //        SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", storeId);
+        //    }
 
-        public async Task<IActionResult> UpdateLocation([Bind] CreateOrderViewModel order)
-        {
-            return View("Create", order);
-        }
+        //    return RedirectToAction("Create");
+        //}
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind] CreateOrderViewModel order)
+        public IActionResult Create([Bind] CreateOrderViewModel order)
         {
             if (ModelState.IsValid)
             {

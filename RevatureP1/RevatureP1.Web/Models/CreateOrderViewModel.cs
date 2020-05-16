@@ -3,6 +3,7 @@ using RevatureP1.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Threading.Tasks;
 
 namespace RevatureP1.Web.Models
@@ -19,5 +20,20 @@ namespace RevatureP1.Web.Models
         public int SelectedQuantity { get; set; }
         public List<LineItemViewModel> SelectedProducts { get; set; }
 
+        public double Total 
+        {
+            get
+            {
+                var total = 0.0;
+                foreach (var item in SelectedProducts)
+                {
+                    total += item.Total;
+                }
+                return total;
+            }
+            set { }
+        }
+
+        public CreateOrderViewModel() { SelectedProducts = new List<LineItemViewModel>(); }
     }
 }
