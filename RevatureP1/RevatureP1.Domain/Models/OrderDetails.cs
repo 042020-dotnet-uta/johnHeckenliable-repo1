@@ -15,8 +15,10 @@ namespace RevatureP1.Models
         public int ProductId { get; set; }
         public Product Product { get; set; }
 
+        [Required]
         public int Quantity { get; set; }
 
+        [Display(Name = "Price Paid")]
         [DataType(DataType.Currency)]
         public double PricePaid { get; set; }
 

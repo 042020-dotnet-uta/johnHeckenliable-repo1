@@ -23,7 +23,7 @@ namespace RevatureP1.Models
 		public Store Store { get; set; }
 
 		[Display(Name = "Order Date")]
-		[DataType(DataType.Date)]
+		[Required, DataType(DataType.Date)]
 		public DateTime OrderDateTime { get; set; }
 
 		public virtual List<OrderDetails> ProductsOrdered { get; set; }

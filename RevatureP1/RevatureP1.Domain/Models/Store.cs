@@ -12,6 +12,7 @@ namespace RevatureP1.Models
         [Key]
         public int StoreId { get; set; }
 
+        [Required, Display(Name = "Location Name")]
         public string Location { get; set; }
 
         public virtual List<Inventory> AvailableProducts { get; set; }

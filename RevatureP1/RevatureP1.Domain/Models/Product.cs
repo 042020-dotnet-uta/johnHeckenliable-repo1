@@ -12,8 +12,10 @@ namespace RevatureP1.Models
         [Key]
         public int PoductId { get; set; }
 
+        [Required, Display(Name = "Product Name")]
         public string ProductDescription { get; set; }
 
+        [Required]
         public double Price { get; set; }
 
         #endregion

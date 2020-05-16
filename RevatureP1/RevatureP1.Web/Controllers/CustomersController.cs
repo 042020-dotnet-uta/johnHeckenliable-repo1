@@ -75,26 +75,6 @@ namespace RevatureP1.Web.Controllers
             return newFunc;
         }
 
-        // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            //var customer = await _context.Customers
-            //    .FirstOrDefaultAsync(m => m.CustomerId == id);
-            var customer = await customerRepo.Get(id);
-
-            if (customer == null)
-            {
-                return NotFound();
-            }
-
-            return View(customer);
-        }
-
         // GET: Customers/Create
         [Authorize(Roles = "Admin")]
         public IActionResult CreateNew()
@@ -180,35 +160,6 @@ namespace RevatureP1.Web.Controllers
             return View(orderDetails);
         }
 
-        
-        public async Task<IActionResult> CustomerOrderHistory()
-        {
-            var ident = User.FindFirst("id");
-            if (ident == null)
-            {
-                return NotFound();
-            }
-            var id = int.Parse(ident.Value);
-
-            return RedirectToAction("OrderHistory", id);
-
-            var orders = await orderRepo.Find(o => o.CusomerId == id);
-
-            if (orders == null)
-            {
-                return NotFound();
-            }
-            var orderViews = new List<OrderViewModel>();
-            foreach (var order in orders)
-            {
-                orderViews.Add(new OrderViewModel
-                {
-                    Order = order
-                });
-            }
-
-            return View(orderViews);
-        }
 
         // GET: Customers/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -267,6 +218,7 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Customers/Delete/5
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -289,6 +241,7 @@ namespace RevatureP1.Web.Controllers
         // POST: Customers/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
             //var customer = await _context.Customers.FindAsync(id);
@@ -297,6 +250,26 @@ namespace RevatureP1.Web.Controllers
             await customerRepo.Delete(id);
 
             return RedirectToAction(nameof(Index));
+        }
+
+        // GET: Customers/Details/5
+        public async Task<IActionResult> Details(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            //var customer = await _context.Customers
+            //    .FirstOrDefaultAsync(m => m.CustomerId == id);
+            var customer = await customerRepo.Get(id);
+
+            if (customer == null)
+            {
+                return NotFound();
+            }
+
+            return View(customer);
         }
     }
 }
