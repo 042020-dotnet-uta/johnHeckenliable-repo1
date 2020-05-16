@@ -16,6 +16,13 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
+        public override async Task<IEnumerable<Customer>> All()
+        {
+            var customers = _context.Customers.ToList();
+
+            return customers;
+        }
+
         public override async Task<Customer> Add(Customer entity)
         {
             //var hashed = Hash.Sha256(entity.Password);

@@ -14,6 +14,7 @@ using System.Linq.Expressions;
 using Microsoft.AspNetCore.Authorization;
 using RevatureP1.Web.Helpers;
 using System.Reflection.Metadata.Ecma335;
+using System.Security.Claims;
 
 namespace RevatureP1.Web.Controllers
 {
