@@ -14,20 +14,20 @@ namespace RevatureP1.Web.Controllers
 {
     public class StoresController : Controller
     {
-        private readonly ShoppingDbContext _context;
+        private readonly IRepository<Store> storesRepo;
         private readonly IRepository<Order> orderRepo;
 
-        public StoresController(ShoppingDbContext context,
+        public StoresController(IRepository<Store> storesRepo,
             IRepository<Order> orderRepo)
         {
-            _context = context;
+            this.storesRepo = storesRepo;
             this.orderRepo = orderRepo;
         }
 
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Stores.ToListAsync());
+            return View(await storesRepo.All());
         }
 
         // GET: Stores/Details/5
@@ -38,10 +38,11 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
 
-            var store = await _context.Stores
-                .Include(s=>s.AvailableProducts)
-                .ThenInclude(p=>p.Product)
-                .FirstOrDefaultAsync(m => m.StoreId == id);
+            var store = await storesRepo.Get(id);
+            //var store = await _context.Stores
+            //    .Include(s=>s.AvailableProducts)
+            //    .ThenInclude(p=>p.Product)
+            //    .FirstOrDefaultAsync(m => m.StoreId == id);
             if (store == null)
             {
                 return NotFound();
@@ -51,107 +52,107 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Stores/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
+        //public IActionResult Create()
+        //{
+        //    return View();
+        //}
 
-        // POST: Stores/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("StoreId,Location")] Store store)
-        {
-            if (ModelState.IsValid)
-            {
-                _context.Add(store);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            return View(store);
-        }
+        //// POST: Stores/Create
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Create([Bind("StoreId,Location")] Store store)
+        //{
+        //    if (ModelState.IsValid)
+        //    {
+        //        _context.Add(store);
+        //        await _context.SaveChangesAsync();
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(store);
+        //}
 
 
         // GET: Stores/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Edit(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var store = await _context.Stores.FindAsync(id);
-            if (store == null)
-            {
-                return NotFound();
-            }
-            return View(store);
-        }
+        //    var store = await _context.Stores.FindAsync(id);
+        //    if (store == null)
+        //    {
+        //        return NotFound();
+        //    }
+        //    return View(store);
+        //}
 
-        // POST: Stores/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StoreId,Location")] Store store)
-        {
-            if (id != store.StoreId)
-            {
-                return NotFound();
-            }
+        //// POST: Stores/Edit/5
+        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
+        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+        //[HttpPost]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> Edit(int id, [Bind("StoreId,Location")] Store store)
+        //{
+        //    if (id != store.StoreId)
+        //    {
+        //        return NotFound();
+        //    }
 
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(store);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StoreExists(store.StoreId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(store);
-        }
+        //    if (ModelState.IsValid)
+        //    {
+        //        try
+        //        {
+        //            _context.Update(store);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //        catch (DbUpdateConcurrencyException)
+        //        {
+        //            if (!StoreExists(store.StoreId))
+        //            {
+        //                return NotFound();
+        //            }
+        //            else
+        //            {
+        //                throw;
+        //            }
+        //        }
+        //        return RedirectToAction(nameof(Index));
+        //    }
+        //    return View(store);
+        //}
 
         // GET: Stores/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Delete(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            var store = await _context.Stores
-                .FirstOrDefaultAsync(m => m.StoreId == id);
-            if (store == null)
-            {
-                return NotFound();
-            }
+        //    var store = await _context.Stores
+        //        .FirstOrDefaultAsync(m => m.StoreId == id);
+        //    if (store == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(store);
-        }
+        //    return View(store);
+        //}
 
-        // POST: Stores/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            var store = await _context.Stores.FindAsync(id);
-            _context.Stores.Remove(store);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-        }
+        //// POST: Stores/Delete/5
+        //[HttpPost, ActionName("Delete")]
+        //[ValidateAntiForgeryToken]
+        //public async Task<IActionResult> DeleteConfirmed(int id)
+        //{
+        //    var store = await _context.Stores.FindAsync(id);
+        //    _context.Stores.Remove(store);
+        //    await _context.SaveChangesAsync();
+        //    return RedirectToAction(nameof(Index));
+        //}
 
         public async Task<IActionResult> OrderHistory(int? id)
         {
@@ -204,11 +205,6 @@ namespace RevatureP1.Web.Controllers
             }
 
             return View(orderDetails);
-        }
-
-        private bool StoreExists(int id)
-        {
-            return _context.Stores.Any(e => e.StoreId == id);
         }
     }
 }

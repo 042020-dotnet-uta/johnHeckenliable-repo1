@@ -12,7 +12,7 @@ using RevatureP1.DataAccess.Repositories;
 
 namespace RevatureP1.Tests
 {
-    public class StoreBackend_Tests
+    public class RepositoryTests
     {
         //private readonly IRepository<Order> orderRepo;
         //private readonly IRepository<Product> productRepo;
@@ -101,6 +101,41 @@ namespace RevatureP1.Tests
         }
 
         [Fact]
+        public async void GetCustomerByEmail()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("GetsCustomerByEmail");
+            string fName = "Bob", lName = "Dole", email = "bdole@email.com";
+            int id = 1;
+
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customer = new Customer
+                {
+                    CustomerId = id,
+                    FirstName = fName,
+                    LastName = lName,
+                    Email = email
+                };
+                context.Add(customer);
+                context.SaveChanges();
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customerRepo = new CustomerRepository(context);
+                var list = await customerRepo.Find(c => c.Email == email);
+                var customerInfo = list.FirstOrDefault();
+
+                Assert.Equal(id, customerInfo.CustomerId);
+                Assert.Equal(fName, customerInfo.FirstName);
+                Assert.Equal(lName, customerInfo.LastName);
+                Assert.Equal(email, customerInfo.Email);
+            }
+        }
+
+        [Fact]
         public async void GetsAllLocations()
         {
             //Arrange
@@ -133,6 +168,64 @@ namespace RevatureP1.Tests
                 var stores = await storeRepo.All();
 
                 Assert.Equal(3, stores.Count());
+            }
+        }
+
+        [Fact]
+        public async void GetsAllProducts()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("GetsAllProducts");
+
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                CreateTwoproducts(context);
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var productRepo = new ProductRepository(context);
+                var products = await productRepo.All();
+
+                Assert.Equal(2, products.Count());
+            }
+        }
+        [Fact]
+        public async void GetsAllCustomers()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("GetsAllCustomers");
+
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customer = new Customer
+                {
+                    CustomerId = 1,
+                    FirstName = "Jim",
+                    LastName = "Bob",
+                    Email = "jimmy@email.com"
+                };
+                context.Add(customer);
+                customer = new Customer
+                {
+                    CustomerId = 2,
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = "jdoe@email.com"
+                };
+                context.Add(customer);
+
+                context.SaveChanges();
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customerRepo = new CustomerRepository(context);
+                var customers = await customerRepo.All();
+
+                Assert.Equal(2, customers.Count());
             }
         }
 
@@ -275,6 +368,49 @@ namespace RevatureP1.Tests
                 Assert.Equal(2, orders.Count());
             }
         }
+
+        [Fact]
+        public async void UpdatesCustomerInfo()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("UpdatesCustomeInfo");
+
+            string fName = "Bob", lName = "Dole", email = "bdole@email.com";
+            int id = 1;
+            var customerInfo = new Customer
+            {
+                CustomerId = id,
+                Email = email,
+                FirstName = fName,
+                LastName = lName
+            };
+
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customerRepo = new CustomerRepository(context);
+                customerInfo = await customerRepo.Add(customerInfo);
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var customerRepo = new CustomerRepository(context);
+                var customer = new Customer
+                {
+                    CustomerId = 1,
+                    FirstName = "Jane",
+                    LastName = "Doe",
+                    Email = email
+                };
+                customerInfo = await customerRepo.Update(customer);
+
+                Assert.Equal(id, customerInfo.CustomerId);
+                Assert.Equal("Jane", customerInfo.FirstName);
+                Assert.Equal("Doe", customerInfo.LastName);
+                Assert.Equal(email, customerInfo.Email);
+            }
+        }
+
 
         //[Fact]
         //public void AddsOrderToDb()

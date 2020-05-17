@@ -193,26 +193,7 @@ namespace RevatureP1.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                //_context.Update(customer);
-                //await _context.SaveChangesAsync();
-                if (null == (customer = await customerRepo.Update(customer)))
-                    return NotFound();
-                /*
-                try
-                {
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!CustomerExists(customer.CustomerId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                */
+                customer = await customerRepo.Update(customer);
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -245,32 +226,29 @@ namespace RevatureP1.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            //var customer = await _context.Customers.FindAsync(id);
-            //_context.Customers.Remove(customer);
-            //await _context.SaveChangesAsync();
             await customerRepo.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }
 
         // GET: Customers/Details/5
-        public async Task<IActionResult> Details(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+        //public async Task<IActionResult> Details(int? id)
+        //{
+        //    if (id == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            //var customer = await _context.Customers
-            //    .FirstOrDefaultAsync(m => m.CustomerId == id);
-            var customer = await customerRepo.Get(id);
+        //    //var customer = await _context.Customers
+        //    //    .FirstOrDefaultAsync(m => m.CustomerId == id);
+        //    var customer = await customerRepo.Get(id);
 
-            if (customer == null)
-            {
-                return NotFound();
-            }
+        //    if (customer == null)
+        //    {
+        //        return NotFound();
+        //    }
 
-            return View(customer);
-        }
+        //    return View(customer);
+        //}
     }
 }
