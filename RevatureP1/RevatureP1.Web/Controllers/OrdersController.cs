@@ -71,7 +71,7 @@ namespace RevatureP1.Web.Controllers
         }
 
         // GET: Orders/Create
-        public async Task<IActionResult> Create(int? storeId)
+        public async Task<IActionResult> Create(int? storeId, int? SelectedProduct, int? SelectedQuantity)
         {
             var customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
             
@@ -92,6 +92,9 @@ namespace RevatureP1.Web.Controllers
             var stores = await storeRepo.All();
             createOrder.StoreLocations = new SelectList(stores, "StoreId", "Location");
 
+            if (SelectedProduct != null)
+                AddProductToOrder(SelectedProduct.Value, SelectedQuantity.Value);
+
             if (storeId != null)
             {
                 var store = await storeRepo.Get(storeId);
@@ -99,42 +102,12 @@ namespace RevatureP1.Web.Controllers
                     return NotFound();
                 createOrder.SelectedStore = store;
 
-                //Temp for testing
-                var lineItem = new LineItemViewModel
-                {
-                    OrderDetails = new OrderDetails
-                    {
-                        ProductId = 1,
-                        Product = await productRepo.Get(1),
-                        PricePaid = 12.99,
-                        Quantity = 2
-                    }
-                };
-                createOrder.SelectedProducts.Add(lineItem);
-                lineItem = new LineItemViewModel
-                {
-                    OrderDetails = new OrderDetails
-                    {
-                        ProductId = 3,
-                        Product = await productRepo.Get(3),
-                        PricePaid = 10.99,
-                        Quantity = 4
-                    }
-                };
-                createOrder.SelectedProducts.Add(lineItem);
+                var cart = SessionHelper.GetObjectFromJson<List<LineItemViewModel>>(HttpContext.Session, "cart");
+                createOrder.SelectedProducts = cart == null ? new List<LineItemViewModel>() : cart;
             }
 
             return View(createOrder);
         }
-        //public async Task<IActionResult> UpdateLocation(int? storeId)
-        //{
-        //    if(storeId != null)
-        //    {
-        //        SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", storeId);
-        //    }
-
-        //    return RedirectToAction("Create");
-        //}
 
         // POST: Orders/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to, for 
@@ -156,6 +129,67 @@ namespace RevatureP1.Web.Controllers
             return View(order);
         }
 
+        private void AddProductToOrder(int SelectedProduct, int SelectedQuantity)
+        {
+            var product = productRepo.Get(SelectedProduct).Result;
+
+            var cart = SessionHelper.GetObjectFromJson<List<LineItemViewModel>>(HttpContext.Session, "cart");
+
+            if (cart == null)
+            {
+                cart = new List<LineItemViewModel>();
+
+                cart.Add(new LineItemViewModel 
+                {  
+                    OrderDetails = new OrderDetails
+                    {
+                        ProductId = product.PoductId,
+                        Product = product,
+                        PricePaid = product.Price,
+                        Quantity = SelectedQuantity
+                    }
+                   
+                });
+            }
+            else
+            {
+                int index = isExist(SelectedProduct);
+                if (index != -1)
+                {
+                    cart[index].OrderDetails.Quantity += SelectedQuantity;
+                }
+                else
+                {
+                    cart.Add(new LineItemViewModel
+                    {
+                        OrderDetails = new OrderDetails
+                        {
+                            ProductId = product.PoductId,
+                            Product = product,
+                            PricePaid = product.Price,
+                            Quantity = SelectedQuantity
+                        }
+
+                    });
+                }
+            }
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
+
+            //return RedirectToAction("Create");
+        }
+        private int isExist(int id)
+        {
+            var cart = SessionHelper.GetObjectFromJson<List<LineItemViewModel>>(HttpContext.Session, "cart");
+
+            for (int i = 0; i < cart.Count; i++)
+            {
+                if (cart[i].OrderDetails.ProductId == id)
+                {
+                    return i;
+                }
+            }
+            return -1;
+        }
         // GET: Orders/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {

@@ -25,9 +25,12 @@ namespace RevatureP1.Web.Models
             get
             {
                 var total = 0.0;
-                foreach (var item in SelectedProducts)
+                if (SelectedProducts != null)
                 {
-                    total += item.Total;
+                    foreach (var item in SelectedProducts)
+                    {
+                        total += item.Total;
+                    }
                 }
                 return total;
             }

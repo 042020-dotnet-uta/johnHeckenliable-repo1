@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -28,6 +29,13 @@ namespace RevatureP1.Web.Controllers
         public IActionResult Privacy()
         {
             return View();
+        }
+
+        public IActionResult Logout()
+        {
+            HttpContext.SignOutAsync();
+
+            return RedirectToAction("Index");
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
