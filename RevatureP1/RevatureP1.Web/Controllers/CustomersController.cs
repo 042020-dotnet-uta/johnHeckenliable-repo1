@@ -16,16 +16,19 @@ using RevatureP1.Web.Helpers;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
 using RevatureP1.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace RevatureP1.Web.Controllers
 {
     public class CustomersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<CustomersController> _logger;
 
-        public CustomersController(IUnitOfWork unitOfWork)
+        public CustomersController(IUnitOfWork unitOfWork, ILogger<CustomersController> logger)
         {
             this._unitOfWork = unitOfWork;
+            this._logger = logger;
         }
 
         // GET: Customers
@@ -86,26 +89,6 @@ namespace RevatureP1.Web.Controllers
             return View();
         }
 
-        // POST: Customers/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> CreateNew(Customer customer)
-        {
-            if (ModelState.IsValid)
-            {
-                if (customer != null)
-                {
-                    var cust = await _unitOfWork.CustomerRepository.Add(customer);
-
-                    return RedirectToAction("Index", "Customer");
-                }
-            }
-            return View(customer);
-        }
-
         public async Task<IActionResult> OrderHistory(int? id)
         {
             if (id == null)
@@ -113,6 +96,7 @@ namespace RevatureP1.Web.Controllers
                 var customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
                 if (customer == null)
                 {
+                    _logger.LogDebug("Unable get the customer infor from session in Customers//OrderHistory");
                     return NotFound();
                 }
                 id = customer.CustomerId;
@@ -120,6 +104,7 @@ namespace RevatureP1.Web.Controllers
             var orders = await _unitOfWork.OrderRepository.Find(o => o.CusomerId == id);
             if (orders == null)
             {
+                _logger.LogDebug("Unable to locate and orders for customer {0} in Customers//OrderHistory", id);
                 return NotFound();
             }
             var orderViews = new List<OrderViewModel>();
@@ -137,12 +122,14 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("The ID was null in Customers//OrderDetails", id);
                 return NotFound();
             }
             var order = await _unitOfWork.OrderRepository.Get(id);
 
             if (order == null)
             {
+                _logger.LogDebug("Unable to locate the orders for ID {0} in Customers//OrderHistory", id);
                 return NotFound();
             }
             var orderDetails = new OrderDetailsViewModel
@@ -170,6 +157,7 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("The ID was null in Customers//Edit");
                 return NotFound();
             }
 
@@ -177,6 +165,7 @@ namespace RevatureP1.Web.Controllers
 
             if (customer == null)
             {
+                _logger.LogDebug("Unable to locate a customer {0} in Customers//Edit", id);
                 return NotFound();
             }
             return View(customer);
@@ -191,6 +180,7 @@ namespace RevatureP1.Web.Controllers
         {
             if (id != customer.CustomerId)
             {
+                _logger.LogDebug("The IDs dont match in Customers//Edit(Post)");
                 return NotFound();
             }
 
@@ -208,15 +198,15 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("The ID was null in Customers//Delete");
                 return NotFound();
             }
 
-            //var customer = await _context.Customers
-            //    .FirstOrDefaultAsync(m => m.CustomerId == id);
             var customer = await _unitOfWork.CustomerRepository.Get(id);
 
             if (customer == null)
             {
+                _logger.LogDebug("Unable to locate a customer for {0} in Customers//Delete", id);
                 return NotFound();
             }
 
@@ -233,25 +223,5 @@ namespace RevatureP1.Web.Controllers
 
             return RedirectToAction(nameof(Index));
         }
-
-        // GET: Customers/Details/5
-        //public async Task<IActionResult> Details(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    //var customer = await _context.Customers
-        //    //    .FirstOrDefaultAsync(m => m.CustomerId == id);
-        //    var customer = await customerRepo.Get(id);
-
-        //    if (customer == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(customer);
-        //}
     }
 }

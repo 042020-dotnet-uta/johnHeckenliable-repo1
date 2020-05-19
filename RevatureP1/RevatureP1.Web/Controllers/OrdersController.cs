@@ -9,15 +9,19 @@ using RevatureP1.Web.Models;
 using RevatureP1.Web.Helpers;
 using RevatureP1.Domain.Interfaces;
 using System;
+using Microsoft.Extensions.Logging;
 
 namespace RevatureP1.Web.Controllers
 {
     public class OrdersController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public OrdersController(IUnitOfWork unitOfWork)
+        private readonly ILogger<OrdersController> _logger;
+        public OrdersController(IUnitOfWork unitOfWork,
+            ILogger<OrdersController> logger)
         {
             this._unitOfWork = unitOfWork;
+            this._logger = logger;
         }
 
         // GET: Orders
@@ -41,12 +45,14 @@ namespace RevatureP1.Web.Controllers
         {
             if (model == null)
             {
+                _logger.LogDebug("The model was sent in null in Orders//OrderDetails");
                 return NotFound();
             }
             var order = await _unitOfWork.OrderRepository.Get(model.OrderId);
 
             if (order == null)
             {
+                _logger.LogDebug("Unable to find the order for id # {0} in Orders//OrderDetails", model.OrderId);
                 return NotFound();
             }
             model = new OrderDetailsViewModel
@@ -75,6 +81,7 @@ namespace RevatureP1.Web.Controllers
             
             if(customer == null)
             {
+                _logger.LogDebug("Unable to get a customer from the session in Orders//Create");
                 return NotFound();
             }
             var createOrder = new CreateOrderViewModel
@@ -128,6 +135,7 @@ namespace RevatureP1.Web.Controllers
 
                 return RedirectToAction(nameof(OrderDetails), model);
             }
+            _logger.LogDebug("Model was invalid in Orders//Create(Post)");
             return RedirectToAction(nameof(Create));
         }
 
@@ -203,8 +211,6 @@ namespace RevatureP1.Web.Controllers
                 }
             }
             SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
-
-            //return RedirectToAction("Create");
         }
         private int isExist(int id)
         {
@@ -219,99 +225,111 @@ namespace RevatureP1.Web.Controllers
             }
             return -1;
         }
+
+        public IActionResult Cancel()
+        {
+            //Clear the session information
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", null);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
+
+            _logger.LogInformation("Order Canceled");
+
+            return RedirectToAction(nameof(Create));
+        }
+
         // GET: Orders/Edit/5
-        public async Task<IActionResult> Edit(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    //    public async Task<IActionResult> Edit(int? id)
+    //    {
+    //        if (id == null)
+    //        {
+    //            return NotFound();
+    //        }
 
-            var order = await _unitOfWork.OrderRepository.Get(id);//_context.Orders.FindAsync(id);
+    //        var order = await _unitOfWork.OrderRepository.Get(id);//_context.Orders.FindAsync(id);
 
-            if (order == null)
-            {
-                return NotFound();
-            }
-            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
-            return View(order);
-        }
+    //        if (order == null)
+    //        {
+    //            return NotFound();
+    //        }
+    //        //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
+    //        //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
+    //        return View(order);
+    //    }
 
-        // POST: Orders/Edit/5
-        // To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("OrderId,CusomerId,StoreId,OrderDateTime")] Order order)
-        {
-            if (id != order.OrderId)
-            {
-                return NotFound();
-            }
+    //    // POST: Orders/Edit/5
+    //    // To protect from overposting attacks, enable the specific properties you want to bind to, for 
+    //    // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
+    //    [HttpPost]
+    //    [ValidateAntiForgeryToken]
+    //    public async Task<IActionResult> Edit(int id, [Bind("OrderId,CusomerId,StoreId,OrderDateTime")] Order order)
+    //    {
+    //        if (id != order.OrderId)
+    //        {
+    //            return NotFound();
+    //        }
 
-            if (ModelState.IsValid)
-            {
-                    //_context.Update(order);
-                    //await _context.SaveChangesAsync();
-                    order = await _unitOfWork.OrderRepository.Update(order);
-                /*
-                try
-                {
+    //        if (ModelState.IsValid)
+    //        {
+    //                //_context.Update(order);
+    //                //await _context.SaveChangesAsync();
+    //                order = await _unitOfWork.OrderRepository.Update(order);
+    //            /*
+    //            try
+    //            {
 
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!OrderExists(order.OrderId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                */
-                return RedirectToAction(nameof(Index));
-            }
-            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
-            return View(order);
-        }
+    //            }
+    //            catch (DbUpdateConcurrencyException)
+    //            {
+    //                if (!OrderExists(order.OrderId))
+    //                {
+    //                    return NotFound();
+    //                }
+    //                else
+    //                {
+    //                    throw;
+    //                }
+    //            }
+    //            */
+    //            return RedirectToAction(nameof(Index));
+    //        }
+    //        //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
+    //        //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
+    //        return View(order);
+    //    }
 
-        // GET: Orders/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
+    //    // GET: Orders/Delete/5
+    //    public async Task<IActionResult> Delete(int? id)
+    //    {
+    //        if (id == null)
+    //        {
+    //            return NotFound();
+    //        }
 
-            //var order = await _context.Orders
-            //    .Include(o => o.Customer)
-            //    .Include(o => o.Store)
-            //    .FirstOrDefaultAsync(m => m.OrderId == id);
-            var order = await _unitOfWork.OrderRepository.Get(id);
+    //        //var order = await _context.Orders
+    //        //    .Include(o => o.Customer)
+    //        //    .Include(o => o.Store)
+    //        //    .FirstOrDefaultAsync(m => m.OrderId == id);
+    //        var order = await _unitOfWork.OrderRepository.Get(id);
 
-            if (order == null)
-            {
-                return NotFound();
-            }
+    //        if (order == null)
+    //        {
+    //            return NotFound();
+    //        }
 
-            return View(order);
-        }
+    //        return View(order);
+    //    }
 
-        // POST: Orders/Delete/5
-        [HttpPost, ActionName("Delete")]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
-        {
-            //var order = await _context.Orders.FindAsync(id);
-            //_context.Orders.Remove(order);
-            //await _context.SaveChangesAsync();
-            await _unitOfWork.OrderRepository.Delete(id);
+    //    // POST: Orders/Delete/5
+    //    [HttpPost, ActionName("Delete")]
+    //    [ValidateAntiForgeryToken]
+    //    public async Task<IActionResult> DeleteConfirmed(int id)
+    //    {
+    //        //var order = await _context.Orders.FindAsync(id);
+    //        //_context.Orders.Remove(order);
+    //        //await _context.SaveChangesAsync();
+    //        await _unitOfWork.OrderRepository.Delete(id);
 
-            return RedirectToAction(nameof(Index));
-        }
+    //        return RedirectToAction(nameof(Index));
+    //    }
     }
 }

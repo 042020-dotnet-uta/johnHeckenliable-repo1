@@ -10,16 +10,20 @@ using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Web.Models;
 using RevatureP1.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace RevatureP1.Web.Controllers
 {
     public class StoresController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
+        private readonly ILogger<StoresController> _logger;
 
-        public StoresController(IUnitOfWork unitOfWork)
+        public StoresController(IUnitOfWork unitOfWork,
+            ILogger<StoresController> logger)
         {
             this._unitOfWork = unitOfWork;
+            this._logger = logger;
         }
         // GET: Stores
         public async Task<IActionResult> Index()
@@ -32,134 +36,31 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("ID is null in Stores//AvailableProducts");
                 return NotFound();
             }
 
             var store = await _unitOfWork.StoreRepository.Get(id);
-            //var store = await _context.Stores
-            //    .Include(s=>s.AvailableProducts)
-            //    .ThenInclude(p=>p.Product)
-            //    .FirstOrDefaultAsync(m => m.StoreId == id);
             if (store == null)
             {
+                _logger.LogDebug("Unable to find a store matching id# {0} in Stores//AvailableProducts", id);
                 return NotFound();
             }
 
             return View(store);
         }
 
-        // GET: Stores/Create
-        //public IActionResult Create()
-        //{
-        //    return View();
-        //}
-
-        //// POST: Stores/Create
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create([Bind("StoreId,Location")] Store store)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        _context.Add(store);
-        //        await _context.SaveChangesAsync();
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(store);
-        //}
-
-
-        // GET: Stores/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var store = await _context.Stores.FindAsync(id);
-        //    if (store == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    return View(store);
-        //}
-
-        //// POST: Stores/Edit/5
-        //// To protect from overposting attacks, enable the specific properties you want to bind to, for 
-        //// more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("StoreId,Location")] Store store)
-        //{
-        //    if (id != store.StoreId)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(store);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!StoreExists(store.StoreId))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    return View(store);
-        //}
-
-        // GET: Stores/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var store = await _context.Stores
-        //        .FirstOrDefaultAsync(m => m.StoreId == id);
-        //    if (store == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    return View(store);
-        //}
-
-        //// POST: Stores/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var store = await _context.Stores.FindAsync(id);
-        //    _context.Stores.Remove(store);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
-
         public async Task<IActionResult> OrderHistory(int? id)
         {
             if (id == null)
             {
+                _logger.LogDebug("ID is null in Stores//OrderHistory");
                 return NotFound();
             }
             var orders = await _unitOfWork.OrderRepository.Find(o => o.StoreId == id);
             if (orders == null)
             {
+                _logger.LogDebug("Unable to find an order matching id# {0} in Stores//OrderHistory", id);
                 return NotFound();
             }
             var orderViews = new List<OrderViewModel>();
@@ -177,12 +78,14 @@ namespace RevatureP1.Web.Controllers
         {
             if (id == null)
             {
+                _logger.LogDebug("ID is null in Stores//OrderDetails");
                 return NotFound();
             }
             var order = await _unitOfWork.OrderRepository.Get(id);
 
             if (order == null)
             {
+                _logger.LogDebug("Unable to find an order matching id# {0} in Stores//OrderDetails", id);
                 return NotFound();
             }
             var orderDetails = new OrderDetailsViewModel

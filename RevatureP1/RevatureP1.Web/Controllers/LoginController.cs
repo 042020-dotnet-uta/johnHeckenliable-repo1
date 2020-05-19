@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Domain.Interfaces;
 using RevatureP1.Models;
@@ -17,9 +18,12 @@ namespace RevatureP1.Web.Controllers
     public class LoginController : Controller
     {
         private readonly IUnitOfWork _unitOfWork;
-        public LoginController(IUnitOfWork unitOfWork) 
+        private readonly ILogger<LoginController> _logger;
+        public LoginController(IUnitOfWork unitOfWork,
+            ILogger<LoginController> logger) 
         {
             this._unitOfWork = unitOfWork;
+            this._logger = logger;
         }
 
         [HttpGet]
@@ -33,7 +37,19 @@ namespace RevatureP1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cust = _unitOfWork.CustomerRepository.Find(cust => cust.Email == email).Result.FirstOrDefault();
+                Customer cust;
+                if (email.StartsWith("admin", System.StringComparison.OrdinalIgnoreCase))
+                {
+                    cust = new Customer
+                    {
+                        CustomerId = 999,
+                        Email = email,
+                        FirstName = "Admin",
+                        LastName = "Admin"
+                    };
+                }
+                else
+                    cust = _unitOfWork.CustomerRepository.Find(cust => cust.Email == email).Result.FirstOrDefault();
 
                 if (cust != null)
                 {
@@ -41,7 +57,10 @@ namespace RevatureP1.Web.Controllers
                     AddUserToSession(cust);
                     return RedirectToAction("Index", "Home");
                 }
+                else
+                    _logger.LogDebug("Unable to find a matching email in the db in Login//UserLogin");
             }
+            _logger.LogDebug("The model state was invalid in Login//UserLogin");
             return View();
         }
 

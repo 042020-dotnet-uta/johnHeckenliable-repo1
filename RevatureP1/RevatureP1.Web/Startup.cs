@@ -17,6 +17,7 @@ using RevatureP1.DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
 using RevatureP1.Domain.Interfaces;
+using Microsoft.Extensions.Logging;
 
 namespace RevatureP1.Web
 {
@@ -36,9 +37,18 @@ namespace RevatureP1.Web
             {
                 options.UseSqlServer(Configuration.GetConnectionString("P1Context"));
             });
-                
 
             services.AddControllersWithViews();
+
+            services.AddLogging(logger =>
+            {
+                Host.CreateDefaultBuilder()
+                .ConfigureLogging(logging =>
+                {
+                    logging.ClearProviders();
+                    logging.AddConsole();
+                });
+            });
 
             //services.AddScoped<IRepository<Customer>, CustomerRepository>();
             //services.AddScoped<IRepository<Store>, StoreRepository>();
@@ -47,8 +57,7 @@ namespace RevatureP1.Web
             //services.AddScoped<IRepository<Inventory>, InventoryRepository>();
             services.AddScoped<IUnitOfWork, UnitOfWork>();
 
-            //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-            //        .AddCookie();
+            
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                     .AddCookie(options =>
                     {
@@ -89,7 +98,7 @@ namespace RevatureP1.Web
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
-            }
+            }                  
             app.UseHttpsRedirection();
             app.UseStaticFiles();
 
