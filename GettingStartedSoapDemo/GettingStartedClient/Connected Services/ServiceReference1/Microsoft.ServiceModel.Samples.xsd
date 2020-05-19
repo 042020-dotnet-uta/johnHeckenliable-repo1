@@ -1,0 +1,43 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<xs:schema xmlns:tns="http://Microsoft.ServiceModel.Samples" elementFormDefault="qualified" targetNamespace="http://Microsoft.ServiceModel.Samples" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="HowMuchFruit">
+    <xs:complexType>
+      <xs:sequence />
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="HowMuchFruitResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="HowMuchFruitResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddFruit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="amountToAdd" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AddFruitResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="AddFruitResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFruit">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="amountToGet" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="GetFruitResponse">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element minOccurs="0" name="GetFruitResult" type="xs:int" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

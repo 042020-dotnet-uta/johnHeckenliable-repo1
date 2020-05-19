@@ -33,7 +33,7 @@ namespace Revaturep1.DataAccess.Repositories
             {
                 UpdateLocationQuantity(order.StoreId, item.ProductId, (item.Quantity * -1));
             }
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
             //return the order (filled in with order id)
             return order;
         }

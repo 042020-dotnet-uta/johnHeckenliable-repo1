@@ -217,7 +217,7 @@ namespace RevatureP1.Web.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public IActionResult DeleteConfirmed(int id)
         {
             _unitOfWork.CustomerRepository.Delete(id);
 
