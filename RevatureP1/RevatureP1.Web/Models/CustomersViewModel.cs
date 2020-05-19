@@ -3,6 +3,7 @@ using RevatureP1.Domain;
 using RevatureP1.Models;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -15,6 +16,7 @@ namespace RevatureP1.Web.Models
         public SelectList SearchTypeList { get; set; }
 
         public int SearchType { get; set; }
+        [Display(Name ="Search String")]
         public string SearchString { get; set; }
     }
 }

@@ -39,8 +39,7 @@ namespace RevatureP1.Web.Controllers
 
             return View(orderViews);
         }
-
-        
+                
         public async Task<IActionResult> OrderDetails(OrderDetailsViewModel model)
         {
             if (model == null)
@@ -123,17 +122,22 @@ namespace RevatureP1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var newOrder = CreateOrder();
-                var model = new OrderDetailsViewModel
-                { 
-                     OrderId = newOrder.OrderId
-                };
+                try
+                {
+                    var newOrder = CreateOrder();
+                    var model = new OrderDetailsViewModel
+                    {
+                        OrderId = newOrder.OrderId
+                    };
+                    //Clear the session information
+                    ClearSessionInfo();
 
-                //Clear the session information
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", null);
-                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
-
-                return RedirectToAction(nameof(OrderDetails), model);
+                    return RedirectToAction(nameof(OrderDetails), model);
+                }
+                catch (ArgumentOutOfRangeException)
+                {
+                    return RedirectToAction(nameof(Create));
+                }
             }
             _logger.LogDebug("Model was invalid in Orders//Create(Post)");
             return RedirectToAction(nameof(Create));
@@ -224,6 +228,12 @@ namespace RevatureP1.Web.Controllers
                 }
             }
             return -1;
+        }
+
+        private void ClearSessionInfo()
+        {
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", null);
+            SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
         }
 
         public IActionResult Cancel()
