@@ -1,0 +1,38 @@
+
+
+--Question #1--
+According to IBM a service has which of the following characteristics?
+A) It can not access another service.
+B) Services should be tightly coupled
+C) It is relatively independent of other software. (CORRECT)
+D) It should not handle business processes
+
+--Question #2--
+What is a core value of SOA?
+A) A Service-Oriented Application is a collection of independent services organized into a hierarchy.
+B) Shared services are given more importance than specific-purpose implementations. (CORRECT)
+C) SOA is mainly implemented from the ground up for new services.
+D) Business value is given less importance than technical strategy
+
+--Question #3--
+The main functionallity of a Service broker, service registry or service repository
+A) Is to make the information regarding the web service available to any potential requester. (CORRECT)
+B) It creates a web service and provides its information to the service registry.
+C) Implementers commonly build SOAs using web services standards.
+D) It locates entries in the broker registry using various find operations and then binds to the service provider in order to invoke one of its web services.
+
+--Question #4--
+What is a challenge to SOA
+A) loose coupling can exhibit more latency, presenting challenges with the implementation of real‐time, dynamic requirements. (CORRECT)
+B) If services and their data are generic enough, they can be accessed through a variety of interfaces.
+C) SOAs provide modular services that can be easily integrated throughout an enterprise.
+D) SOA is not designed to bring together legacy systems in heterogeneous IT environments.
+
+--Question #5--
+When using a WSDL:
+A) the responding service needs to know about the calling service
+B) you can integrate legacy code to with new
+C) The Proxy dispatches the request to the appropriate back‐end service.
+D) Each service is a black box (CORRECT)
+
+
