@@ -219,7 +219,7 @@ namespace RevatureP1.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await _unitOfWork.CustomerRepository.Delete(id);
+            _unitOfWork.CustomerRepository.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }

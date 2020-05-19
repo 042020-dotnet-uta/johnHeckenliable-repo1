@@ -412,240 +412,272 @@ namespace RevatureP1.Tests
         }
 
 
-        //[Fact]
-        //public void AddsOrderToDb()
-        //{
-        //    //Arrange
-        //    var options = BuildInMemoryDb("AddsOrderToDb");
-        //    int orderId;
+        [Fact]
+        public void AddsOrderToDb()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("AddsOrderToDb");
+            int orderId;
 
-        //    //Act
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        CreateOneCustomer(context);
-        //        CreateTwoproducts(context);
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                CreateOneCustomer(context);
+                CreateTwoproducts(context);
 
-        //        var store = new Store
-        //        {
-        //            StoreId = 1,
-        //            Location = "Location1",
-        //            AvailableProducts = new List<Inventory>
-        //            {
-        //                new Inventory
-        //                {
-        //                    ProductId = 1,
-        //                    StoreId = 1,
-        //                    Quantity = 10
-        //                },
-        //                new Inventory
-        //                {
-        //                    ProductId = 2,
-        //                    StoreId = 1,
-        //                    Quantity = 50
-        //                }
-        //            }
-        //        };
-        //        context.Add(store);
-        //        context.SaveChanges();
+                var store = new Store
+                {
+                    StoreId = 1,
+                    Location = "Location1",
+                    AvailableProducts = new List<Inventory>
+                    {
+                        new Inventory
+                        {
+                            ProductId = 1,
+                            StoreId = 1,
+                            Quantity = 10
+                        },
+                        new Inventory
+                        {
+                            ProductId = 2,
+                            StoreId = 1,
+                            Quantity = 50
+                        }
+                    }
+                };
+                context.Add(store);
+                context.SaveChanges();
 
-        //        var backend = new StoreBackend(context);
-        //        var prods = new List<ProductQuantity>()
-        //        {
-        //            new ProductQuantity()
-        //            {
-        //                ProductId = 1,
-        //                Quantity = 2
-        //            },
-        //            new ProductQuantity()
-        //            {
-        //                ProductId=  2,
-        //                Quantity=  5
-        //            }
-        //        };
+                var unitOfWork = new UnitOfWork(context);
 
-        //        orderId = backend.PlaceNewOrder(1, 1, prods).OrderId;
-        //    }
-        //    //Assert
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        var orders = from ord in context.Orders
-        //                     where ord.OrderId == orderId
-        //                     select ord;
+                var prods = new List<OrderDetails>()
+                {
+                    new OrderDetails()
+                    {
+                        ProductId = 1,
+                        Quantity = 2,
+                        PricePaid = 5.99
+                    },
+                    new OrderDetails()
+                    {
+                        ProductId=  2,
+                        Quantity=  5,
+                        PricePaid = 6.99
+                    }
+                };
+                var order = new Order
+                {
+                    ProductsOrdered = prods,
+                    CusomerId = 1,
+                    StoreId = 1
+                    
+                };
 
-        //        Assert.Single(orders);
-        //    }
-        //}
+                orderId = unitOfWork.OrderRepository.Add(order).Result.OrderId;
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var orders = from ord in context.Orders
+                             where ord.OrderId == orderId
+                             select ord;
 
-        //[Fact]
-        //public void DecrementsInventoryOnOrder()
-        //{
-        //    //Arrange
-        //    var options = BuildInMemoryDb("DecrementsInventory");
-        //    int orderId;
+                Assert.Single(orders);
+            }
+        }
 
-        //    //Act
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        CreateOneCustomer(context);
-        //        CreateTwoproducts(context);
+        [Fact]
+        public void DecrementsInventoryOnOrder()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("DecrementsInventory");
+            int orderId;
 
-        //        var store = new Store
-        //        {
-        //            StoreId = 1,
-        //            Location = "Location1",
-        //            AvailableProducts = new List<Inventory>
-        //            {
-        //                new Inventory
-        //                {
-        //                    ProductId = 1,
-        //                    StoreId = 1,
-        //                    Quantity = 10
-        //                },
-        //                new Inventory
-        //                {
-        //                    ProductId = 2,
-        //                    StoreId = 1,
-        //                    Quantity = 50
-        //                }
-        //            }
-        //        };
-        //        context.Add(store);
-        //        context.SaveChanges();
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                CreateOneCustomer(context);
+                CreateTwoproducts(context);
 
-        //        var backend = new StoreBackend(context);
-        //        var prods = new List<ProductQuantity>()
-        //        {
-        //            new ProductQuantity()
-        //            {
-        //                ProductId = 1,
-        //                Quantity = 2
-        //            }
-        //        };
+                var store = new Store
+                {
+                    StoreId = 1,
+                    Location = "Location1",
+                    AvailableProducts = new List<Inventory>
+                    {
+                        new Inventory
+                        {
+                            ProductId = 1,
+                            StoreId = 1,
+                            Quantity = 10
+                        },
+                        new Inventory
+                        {
+                            ProductId = 2,
+                            StoreId = 1,
+                            Quantity = 50
+                        }
+                    }
+                };
+                context.Add(store);
+                context.SaveChanges();
 
-        //        orderId = backend.PlaceNewOrder(1, 1, prods).OrderId;
-        //    }
-        //    //Assert
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        var item = (from inv in context.StoreInventories
-        //                    where inv.StoreId == 1 && inv.ProductId == 1
-        //                    select inv).Take(1).FirstOrDefault();
+                var unitOfWork = new UnitOfWork(context);
 
-        //        Assert.Equal(8, item.Quantity);
-        //    }
-        //}
+                var prods = new List<OrderDetails>()
+                {
+                    new OrderDetails()
+                    {
+                        ProductId = 1,
+                        Quantity = 2,
+                        PricePaid = 5.99
+                    }
+                };
+                var order = new Order
+                {
+                    ProductsOrdered = prods,
+                    CusomerId = 1,
+                    StoreId = 1
 
-        //[Fact]
-        //public void ThrowsOnNegativeInventory()
-        //{
-        //    //Arrange
-        //    var options = BuildInMemoryDb("ThrowsException");
+                };
 
-        //    //Act
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        CreateOneCustomer(context);
-        //        CreateTwoproducts(context);
+                orderId = unitOfWork.OrderRepository.Add(order).Result.OrderId;
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var item = (from inv in context.StoreInventories
+                            where inv.StoreId == 1 && inv.ProductId == 1
+                            select inv).Take(1).FirstOrDefault();
 
-        //        var store = new Store
-        //        {
-        //            StoreId = 1,
-        //            Location = "Location1",
-        //            AvailableProducts = new List<Inventory>
-        //            {
-        //                new Inventory
-        //                {
-        //                    ProductId = 1,
-        //                    StoreId = 1,
-        //                    Quantity = 10
-        //                },
-        //                new Inventory
-        //                {
-        //                    ProductId = 2,
-        //                    StoreId = 1,
-        //                    Quantity = 50
-        //                }
-        //            }
-        //        };
-        //        context.Add(store);
-        //        context.SaveChanges();
-        //    }
-        //    //Assert
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        var backend = new StoreBackend(context);
-        //        var prods = new List<ProductQuantity>()
-        //        {
-        //            new ProductQuantity()
-        //            {
-        //                ProductId = 1,
-        //                Quantity = 12
-        //            }
-        //        };
+                Assert.Equal(8, item.Quantity);
+            }
+        }
 
-        //        Assert.Throws<ArgumentOutOfRangeException>(() => backend.PlaceNewOrder(1, 1, prods));
-        //    }
-        //}
+        [Fact]
+        public void ThrowsOnNegativeInventory()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("ThrowsException");
 
-        //[Fact]
-        //public void CancelsOrderOnNegativeInventory()
-        //{
-        //    //Arrange
-        //    var options = BuildInMemoryDb("CancelsOrder");
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                CreateOneCustomer(context);
+                CreateTwoproducts(context);
 
-        //    //Act
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        CreateOneCustomer(context);
-        //        CreateTwoproducts(context);
+                var store = new Store
+                {
+                    StoreId = 1,
+                    Location = "Location1",
+                    AvailableProducts = new List<Inventory>
+                    {
+                        new Inventory
+                        {
+                            ProductId = 1,
+                            StoreId = 1,
+                            Quantity = 10
+                        }
+                    }
+                };
+                context.Add(store);
+                context.SaveChanges();
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var unitOfWork = new UnitOfWork(context);
 
-        //        var store = new Store
-        //        {
-        //            StoreId = 1,
-        //            Location = "Location1",
-        //            AvailableProducts = new List<Inventory>
-        //            {
-        //                new Inventory
-        //                {
-        //                    ProductId = 1,
-        //                    StoreId = 1,
-        //                    Quantity = 10
-        //                },
-        //                new Inventory
-        //                {
-        //                    ProductId = 2,
-        //                    StoreId = 1,
-        //                    Quantity = 50
-        //                }
-        //            }
-        //        };
-        //        context.Add(store);
-        //        context.SaveChanges();
-        //        try
-        //        {
-        //            var backend = new StoreBackend(context);
-        //            var prods = new List<ProductQuantity>()
-        //        {
-        //            new ProductQuantity()
-        //            {
-        //                ProductId = 1,
-        //                Quantity = 12
-        //            }
-        //        };
+                var prods = new List<OrderDetails>()
+                {
+                    new OrderDetails()
+                    {
+                        ProductId = 1,
+                        Quantity = 12,
+                        PricePaid = 5.99
+                    }
+                };
+                var order = new Order
+                {
+                    ProductsOrdered = prods,
+                    CusomerId = 1,
+                    StoreId = 1
 
-        //            backend.PlaceNewOrder(1, 1, prods);
-        //        }
-        //        catch { }
-        //    }
-        //    //Assert
-        //    using (var context = new ShoppingDbContext(options))
-        //    {
-        //        var orders = (from o in context.Orders
-        //                      select o).ToList();
+                };
 
-        //        Assert.Empty(orders);
-        //    }
-        //}
+                //orderId = unitOfWork.OrderRepository.Add(order).Result.OrderId;
+
+                Assert.ThrowsAny<Exception>(() => unitOfWork.OrderRepository.Add(order).Result);
+            }
+        }
+
+        [Fact]
+        public void CancelsOrderOnNegativeInventory()
+        {
+            //Arrange
+            var options = BuildInMemoryDb("CancelsOrder");
+
+            //Act
+            using (var context = new ShoppingDbContext(options))
+            {
+                CreateOneCustomer(context);
+                CreateTwoproducts(context);
+
+                var store = new Store
+                {
+                    StoreId = 1,
+                    Location = "Location1",
+                    AvailableProducts = new List<Inventory>
+                    {
+                        new Inventory
+                        {
+                            ProductId = 1,
+                            StoreId = 1,
+                            Quantity = 10
+                        },
+                        new Inventory
+                        {
+                            ProductId = 2,
+                            StoreId = 1,
+                            Quantity = 50
+                        }
+                    }
+                };
+                context.Add(store);
+                context.SaveChanges();
+                try
+                {
+                    var unitOfWork = new UnitOfWork(context);
+                    var prods = new List<OrderDetails>()
+                    {
+                        new OrderDetails()
+                        {
+                            ProductId = 1,
+                            Quantity = 12,
+                            PricePaid = 5.99
+                        }
+                    };
+                    var order = new Order
+                    {
+                        ProductsOrdered = prods,
+                        CusomerId = 1,
+                        StoreId = 1
+
+                    };
+
+                    unitOfWork.OrderRepository.Add(order);
+                }
+                catch { }
+            }
+            //Assert
+            using (var context = new ShoppingDbContext(options))
+            {
+                var orders = (from o in context.Orders
+                              select o).ToList();
+
+                Assert.Empty(orders);
+            }
+        }
 
         private void CreateOneCustomer(ShoppingDbContext context)
         {

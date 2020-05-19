@@ -13,7 +13,7 @@ namespace Revaturep1.Domain.Interfaces
         Task<T> Get(int? id);
         Task<IEnumerable<T>> All();
         Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate);
-        Task Delete(int? id);
+        void Delete(int? id);
         void SaveChanges();
     }
 }

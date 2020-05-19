@@ -54,7 +54,7 @@ namespace Revaturep1.DataAccess.Repositories
             return ent;
         }
 
-        public async virtual Task Delete(int? id)
+        public async virtual void Delete(int? id)
         {
             var ent = await Get(id);
             _context.Remove(ent);
