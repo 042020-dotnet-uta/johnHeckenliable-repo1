@@ -16,9 +16,11 @@
         <select asp-for="SearchType" asp-items="Html.GetEnumSelectList<RevatureP1.Domain.CustomerSearchType>()">
         </select>
         <input type="text" asp-for="SearchString">
-        <input type="submit" value="Search">
+        <input type="submit" value="Search"class="btn btn-outline-primary btn-sm">
+
+        <input type="submit" value="Reset" asp-action="ResetSearch"class="btn btn-outline-secondary btn-sm">
     </p>
-</form>
+</form> 
 
 <table class="table">
     <thead>

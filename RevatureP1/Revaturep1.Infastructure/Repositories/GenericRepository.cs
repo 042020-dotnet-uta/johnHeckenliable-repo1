@@ -29,12 +29,14 @@ namespace Revaturep1.DataAccess.Repositories
         public async virtual Task<IEnumerable<T>> All()
         {
             return await _context.Set<T>()
+                .AsNoTracking()
                 .ToListAsync();
         }
 
         public async virtual Task<IEnumerable<T>> Find(Expression<Func<T, bool>> predicate)
         {
             return await _context.Set<T>()
+                .AsNoTracking()
                 .AsQueryable()
                 .Where(predicate)
                 .ToListAsync();
@@ -50,8 +52,6 @@ namespace Revaturep1.DataAccess.Repositories
             var ent = _context.Update(entity).Entity;
             await _context.SaveChangesAsync();
             return ent;
-
-            //return await _context.Update(entity).Entity;
         }
 
         public async virtual Task Delete(int? id)

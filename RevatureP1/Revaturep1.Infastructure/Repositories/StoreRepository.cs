@@ -19,6 +19,7 @@ namespace Revaturep1.DataAccess.Repositories
         public override async Task<Store> Get(int? id)
         {
             return await _context.Stores
+                .AsNoTracking()
                 .Include(s => s.AvailableProducts)
                 .ThenInclude(a => a.Product)
                 .Where(s=>s.StoreId == id)
@@ -27,6 +28,7 @@ namespace Revaturep1.DataAccess.Repositories
         public override async Task<IEnumerable<Store>> Find(Expression<Func<Store, bool>> predicate)
         {
             return await _context.Stores
+                .AsNoTracking()
                 .Include(s => s.AvailableProducts)
                 .ThenInclude(a => a.Product)
                 .Where(predicate)

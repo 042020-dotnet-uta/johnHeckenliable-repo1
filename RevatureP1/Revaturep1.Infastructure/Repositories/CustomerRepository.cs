@@ -18,9 +18,6 @@ namespace Revaturep1.DataAccess.Repositories
 
         public override async Task<Customer> Add(Customer entity)
         {
-            //var hashed = Hash.Sha256(entity.Password);
-            //entity.Password = hashed;
-
             var ent = _context.Add(entity).Entity;
             await _context.SaveChangesAsync();
             return ent;

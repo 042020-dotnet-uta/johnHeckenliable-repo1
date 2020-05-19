@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Revaturep1.Domain.Interfaces;
+using RevatureP1.Domain.Interfaces;
 using RevatureP1.Models;
 using RevatureP1.Web.Helpers;
 using RevatureP1.Web.Models;
@@ -13,18 +14,18 @@ namespace RevatureP1.Web.Controllers
     [Route("cart")]
     public class CartController : Controller
     {
-        private readonly IRepository<Product> productRepo;
-        public CartController(IRepository<Product> productRepo)
+        private readonly IUnitOfWork _unitOfWork;
+        public CartController(IUnitOfWork unitOfWork)
         {
-            this.productRepo = productRepo;
+            this._unitOfWork = unitOfWork;
         }
 
         [Route("index")]
         public IActionResult Index()
         {
+
             var cart = SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart");
-            ViewBag.cart = cart;
-            ViewBag.total = cart.Sum(item => item.Product.Price * item.Quantity);
+            
             return View();
         }
 
@@ -34,7 +35,7 @@ namespace RevatureP1.Web.Controllers
             if (SessionHelper.GetObjectFromJson<List<CartItem>>(HttpContext.Session, "cart") == null)
             {
                 var cart = new List<CartItem>();
-                cart.Add(new CartItem { Product = await productRepo.Get(id), Quantity = 1 });
+                cart.Add(new CartItem { Product = await _unitOfWork.ProductRepository.Get(id), Quantity = 1 });
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
             }
             else
@@ -47,7 +48,7 @@ namespace RevatureP1.Web.Controllers
                 }
                 else
                 {
-                    cart.Add(new CartItem { Product = await productRepo.Get(id), Quantity = 1 });
+                    cart.Add(new CartItem { Product = await _unitOfWork.ProductRepository.Get(id), Quantity = 1 });
                 }
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", cart);
             }

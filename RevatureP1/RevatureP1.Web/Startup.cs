@@ -16,6 +16,7 @@ using RevatureP1.Models;
 using RevatureP1.DataAccess.Repositories;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
+using RevatureP1.Domain.Interfaces;
 
 namespace RevatureP1.Web
 {
@@ -32,15 +33,19 @@ namespace RevatureP1.Web
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<ShoppingDbContext>(options =>
-            options.UseSqlServer(Configuration.GetConnectionString("P1Context")));
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("P1Context"));
+            });
+                
 
             services.AddControllersWithViews();
 
-            services.AddTransient<IRepository<Customer>, CustomerRepository>();
-            services.AddTransient<IRepository<Store>, StoreRepository>();
-            services.AddTransient<IRepository<Order>, OrderRepository>();
-            services.AddTransient<IRepository<Product>, ProductRepository>();
-            services.AddTransient<IRepository<Inventory>, InventoryRepository>();
+            //services.AddScoped<IRepository<Customer>, CustomerRepository>();
+            //services.AddScoped<IRepository<Store>, StoreRepository>();
+            //services.AddScoped<IRepository<Order>, OrderRepository>();
+            //services.AddScoped<IRepository<Product>, ProductRepository>();
+            //services.AddScoped<IRepository<Inventory>, InventoryRepository>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             //services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
             //        .AddCookie();

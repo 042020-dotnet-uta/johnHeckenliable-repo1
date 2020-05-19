@@ -15,19 +15,17 @@ using Microsoft.AspNetCore.Authorization;
 using RevatureP1.Web.Helpers;
 using System.Reflection.Metadata.Ecma335;
 using System.Security.Claims;
+using RevatureP1.Domain.Interfaces;
 
 namespace RevatureP1.Web.Controllers
 {
     public class CustomersController : Controller
     {
-        private readonly IRepository<Customer> customerRepo;
-        private readonly IRepository<Order> orderRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public CustomersController(IRepository<Customer> customerRepo,
-            IRepository<Order> orderRepo)
+        public CustomersController(IUnitOfWork unitOfWork)
         {
-            this.customerRepo = customerRepo;
-            this.orderRepo = orderRepo;
+            this._unitOfWork = unitOfWork;
         }
 
         // GET: Customers
@@ -39,11 +37,11 @@ namespace RevatureP1.Web.Controllers
             {
                 //Build a predicate to send to the repository to search
                 var predicate = CreatePredicate(SearchType.GetValueOrDefault(), searchString);
-                customers = await customerRepo.Find(predicate);
+                customers = await _unitOfWork.CustomerRepository.Find(predicate);
             }
             else
             {
-                customers = await customerRepo.All();
+                customers = await _unitOfWork.CustomerRepository.All();
             }
 
             var customersView = new CustomersViewModel
@@ -76,6 +74,11 @@ namespace RevatureP1.Web.Controllers
             return newFunc;
         }
 
+        public IActionResult ResetSearch()
+        {
+            return RedirectToAction("Index");
+        }
+
         // GET: Customers/Create
         [Authorize(Roles = "Admin")]
         public IActionResult CreateNew()
@@ -95,7 +98,7 @@ namespace RevatureP1.Web.Controllers
             {
                 if (customer != null)
                 {
-                    var cust = await customerRepo.Add(customer);
+                    var cust = await _unitOfWork.CustomerRepository.Add(customer);
 
                     return RedirectToAction("Index", "Customer");
                 }
@@ -114,7 +117,7 @@ namespace RevatureP1.Web.Controllers
                 }
                 id = customer.CustomerId;
             }
-            var orders = await orderRepo.Find(o => o.CusomerId == id);
+            var orders = await _unitOfWork.OrderRepository.Find(o => o.CusomerId == id);
             if (orders == null)
             {
                 return NotFound();
@@ -136,7 +139,7 @@ namespace RevatureP1.Web.Controllers
             {
                 return NotFound();
             }
-            var order = await orderRepo.Get(id);
+            var order = await _unitOfWork.OrderRepository.Get(id);
 
             if (order == null)
             {
@@ -170,7 +173,7 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
 
-            var customer = await customerRepo.Get(id);//_context.Customers.FindAsync(id);
+            var customer = await _unitOfWork.CustomerRepository.Get(id);//_context.Customers.FindAsync(id);
 
             if (customer == null)
             {
@@ -193,7 +196,7 @@ namespace RevatureP1.Web.Controllers
 
             if (ModelState.IsValid)
             {
-                customer = await customerRepo.Update(customer);
+                customer = await _unitOfWork.CustomerRepository.Update(customer);
                 return RedirectToAction(nameof(Index));
             }
             return View(customer);
@@ -210,7 +213,7 @@ namespace RevatureP1.Web.Controllers
 
             //var customer = await _context.Customers
             //    .FirstOrDefaultAsync(m => m.CustomerId == id);
-            var customer = await customerRepo.Get(id);
+            var customer = await _unitOfWork.CustomerRepository.Get(id);
 
             if (customer == null)
             {
@@ -226,7 +229,7 @@ namespace RevatureP1.Web.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            await customerRepo.Delete(id);
+            await _unitOfWork.CustomerRepository.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }

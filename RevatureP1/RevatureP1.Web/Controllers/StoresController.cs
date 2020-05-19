@@ -9,25 +9,22 @@ using RevatureP1.Models;
 using Revaturep1.DataAccess;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Web.Models;
+using RevatureP1.Domain.Interfaces;
 
 namespace RevatureP1.Web.Controllers
 {
     public class StoresController : Controller
     {
-        private readonly IRepository<Store> storesRepo;
-        private readonly IRepository<Order> orderRepo;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public StoresController(IRepository<Store> storesRepo,
-            IRepository<Order> orderRepo)
+        public StoresController(IUnitOfWork unitOfWork)
         {
-            this.storesRepo = storesRepo;
-            this.orderRepo = orderRepo;
+            this._unitOfWork = unitOfWork;
         }
-
         // GET: Stores
         public async Task<IActionResult> Index()
         {
-            return View(await storesRepo.All());
+            return View(await _unitOfWork.StoreRepository.All());
         }
 
         // GET: Stores/Details/5
@@ -38,7 +35,7 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
 
-            var store = await storesRepo.Get(id);
+            var store = await _unitOfWork.StoreRepository.Get(id);
             //var store = await _context.Stores
             //    .Include(s=>s.AvailableProducts)
             //    .ThenInclude(p=>p.Product)
@@ -160,7 +157,7 @@ namespace RevatureP1.Web.Controllers
             {
                 return NotFound();
             }
-            var orders = await orderRepo.Find(o => o.StoreId == id);
+            var orders = await _unitOfWork.OrderRepository.Find(o => o.StoreId == id);
             if (orders == null)
             {
                 return NotFound();
@@ -182,7 +179,7 @@ namespace RevatureP1.Web.Controllers
             {
                 return NotFound();
             }
-            var order = await orderRepo.Get(id);
+            var order = await _unitOfWork.OrderRepository.Get(id);
 
             if (order == null)
             {

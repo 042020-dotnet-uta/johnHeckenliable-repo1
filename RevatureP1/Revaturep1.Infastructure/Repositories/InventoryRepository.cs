@@ -20,6 +20,7 @@ namespace RevatureP1.DataAccess.Repositories
         public override async Task<IEnumerable<Inventory>> Find(Expression<Func<Inventory, bool>> predicate)
         {
             return await _context.StoreInventories
+                .AsNoTracking()
                 .Include(i => i.Product)
                 .Where(predicate)
                 .ToListAsync();

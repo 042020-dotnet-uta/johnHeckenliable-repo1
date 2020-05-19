@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Migrations.Operations;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 using RevatureP1.Models;
 using System;
@@ -16,9 +17,31 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
+        public async override Task<Order> Add(Order order)
+        {
+            //Check to make sure there is enough inventory
+            foreach (var item in order.ProductsOrdered)
+            {
+                if (!(CheckForEnoughInventory(order.StoreId, item.ProductId, item.Quantity)))
+                    throw new ArgumentOutOfRangeException($"Not enough inventory for product with ID {item.ProductId}");
+            }
+
+            //add the order to the db
+            _context.Add(order);
+            //decrement the appropriate inventories
+            foreach (var item in order.ProductsOrdered)
+            {
+                UpdateLocationQuantity(order.StoreId, item.ProductId, (item.Quantity * -1));
+            }
+            _context.SaveChanges();
+            //return the order (filled in with order id)
+            return order;
+        }
+
         public override async Task<IEnumerable<Order>> All()
         {
             return await _context.Orders
+                .AsNoTracking()
                 .Include(o => o.ProductsOrdered)
                 .ThenInclude(l => l.Product)
                 .Include(o => o.Store)
@@ -29,6 +52,7 @@ namespace Revaturep1.DataAccess.Repositories
         public override async Task<Order> Get(int? id)
         {
             return await _context.Orders
+                .AsNoTracking()
                 .Include(o => o.ProductsOrdered)
                 .ThenInclude(l => l.Product)
                 .Include(o => o.Store)
@@ -39,6 +63,7 @@ namespace Revaturep1.DataAccess.Repositories
         public override async Task<IEnumerable<Order>> Find(Expression<Func<Order, bool>> predicate)
         {
             return await _context.Orders
+                .AsNoTracking()
                 .Include(o => o.ProductsOrdered)
                 .ThenInclude(l => l.Product)
                 .Include(o => o.Store)
@@ -61,6 +86,24 @@ namespace Revaturep1.DataAccess.Repositories
         private bool OrderExists(int id)
         {
             return _context.Orders.Any(e => e.OrderId == id);
+        }
+
+        private bool CheckForEnoughInventory(int storeId, int prodId, int quantity)
+        {
+            var inventory = (from inv in _context.StoreInventories
+                             where inv.StoreId == storeId && inv.ProductId == prodId
+                             select inv).AsNoTracking().Take(1).FirstOrDefault();
+
+            return inventory.Quantity >= quantity;
+        }
+
+        private void UpdateLocationQuantity(int storeId, int prodId, int quatitiyUpdate)
+        {
+            var inventory = (from inv in _context.StoreInventories
+                             where inv.StoreId == storeId && inv.ProductId == prodId
+                             select inv).Take(1).FirstOrDefault();
+
+            inventory.Quantity += quatitiyUpdate;
         }
     }
 }

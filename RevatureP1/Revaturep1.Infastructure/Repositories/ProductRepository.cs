@@ -11,15 +11,15 @@ namespace Revaturep1.DataAccess.Repositories
         {
         }
 
-        public override async Task<Product> Update(Product entity)
-        {
-            var product = await _context.Products
-                .SingleAsync(p => p.PoductId == entity.PoductId);
+        //public override async Task<Product> Update(Product entity)
+        //{
+        //    var product = await _context.Products
+        //        .SingleAsync(p => p.PoductId == entity.PoductId);
 
-            product.ProductDescription = entity.ProductDescription;
-            product.Price = entity.Price;
+        //    product.ProductDescription = entity.ProductDescription;
+        //    product.Price = entity.Price;
 
-            return await base.Update(product);
-        }
+        //    return await base.Update(product);
+        //}
     }
 }

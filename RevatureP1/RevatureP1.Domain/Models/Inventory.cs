@@ -8,12 +8,12 @@ namespace RevatureP1.Models
         [Key]
         [ForeignKey("Store")]
         public int StoreId { get; set; }
-        public Store Store { get; set; }
+        public virtual Store Store { get; set; }
 
         [Key]
         [ForeignKey("Product")]
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         [Required]
         public int Quantity { get; set; }

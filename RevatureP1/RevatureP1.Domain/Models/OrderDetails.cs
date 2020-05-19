@@ -8,12 +8,12 @@ namespace RevatureP1.Models
         [Key]
         [ForeignKey("Order")]
         public int OrderId { get; set; }
-        public Order Order { get; set; }
+        public virtual Order Order { get; set; }
 
         [Key]
         [ForeignKey("Product")]
         public int ProductId { get; set; }
-        public Product Product { get; set; }
+        public virtual Product Product { get; set; }
 
         [Required]
         public int Quantity { get; set; }

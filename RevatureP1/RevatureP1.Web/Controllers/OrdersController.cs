@@ -7,35 +7,24 @@ using RevatureP1.Models;
 using Revaturep1.Domain.Interfaces;
 using RevatureP1.Web.Models;
 using RevatureP1.Web.Helpers;
+using RevatureP1.Domain.Interfaces;
+using System;
 
 namespace RevatureP1.Web.Controllers
 {
     public class OrdersController : Controller
     {
-        private readonly IRepository<Order> orderRepo;
-        private readonly IRepository<Product> productRepo;
-        private readonly IRepository<Customer> customerRepo;
-        private readonly IRepository<Store> storeRepo;
-        private readonly IRepository<Inventory> inventoryRepo;
-
-        public OrdersController(IRepository<Order> orderRepo,
-            IRepository<Product> productRepo,
-            IRepository<Customer> customerRepo,
-            IRepository<Store> storeRepo,
-            IRepository<Inventory> inventoryRepo)
+        private readonly IUnitOfWork _unitOfWork;
+        public OrdersController(IUnitOfWork unitOfWork)
         {
-            this.orderRepo = orderRepo;
-            this.productRepo = productRepo;
-            this.customerRepo = customerRepo;
-            this.storeRepo = storeRepo;
-            this.inventoryRepo = inventoryRepo;
+            this._unitOfWork = unitOfWork;
         }
 
         // GET: Orders
         public async Task<IActionResult> Index()
         {
             var orderViews = new List<OrderViewModel>();
-            var orders = await orderRepo.All();
+            var orders = await _unitOfWork.OrderRepository.All();
             foreach (var order in orders)
             {
                 orderViews.Add(new OrderViewModel
@@ -47,27 +36,36 @@ namespace RevatureP1.Web.Controllers
             return View(orderViews);
         }
 
-        // GET: Orders/Details/5
-        public async Task<IActionResult> Details(int? id)
+        
+        public async Task<IActionResult> OrderDetails(OrderDetailsViewModel model)
         {
-            if (id == null)
+            if (model == null)
             {
                 return NotFound();
             }
-
-            //var order = await _context.Orders
-            //    .Include(o => o.Customer)
-            //    .Include(o => o.Store)
-            //    .FirstOrDefaultAsync(m => m.OrderId == id);
-
-            var order = await orderRepo.Get(id);
+            var order = await _unitOfWork.OrderRepository.Get(model.OrderId);
 
             if (order == null)
             {
                 return NotFound();
             }
+            model = new OrderDetailsViewModel
+            {
+                OrderId = order.OrderId,
+                Customer = order.Customer,
+                Store = order.Store,
+                OrderDateTime = order.OrderDateTime
+            };
+            foreach (var item in order.ProductsOrdered)
+            {
+                model.LineItems.Add(
+                    new LineItemViewModel
+                    {
+                        OrderDetails = item
+                    });
+            }
 
-            return View(order);
+            return View(model);
         }
 
         // GET: Orders/Create
@@ -89,7 +87,7 @@ namespace RevatureP1.Web.Controllers
             else
                 SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", storeId);
 
-            var stores = await storeRepo.All();
+            var stores = await _unitOfWork.StoreRepository.All();
             createOrder.StoreLocations = new SelectList(stores, "StoreId", "Location");
 
             if (SelectedProduct != null)
@@ -97,7 +95,7 @@ namespace RevatureP1.Web.Controllers
 
             if (storeId != null)
             {
-                var store = await storeRepo.Get(storeId);
+                var store = await _unitOfWork.StoreRepository.Get(storeId);
                 if (null == store)
                     return NotFound();
                 createOrder.SelectedStore = store;
@@ -114,24 +112,55 @@ namespace RevatureP1.Web.Controllers
         // more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create([Bind] CreateOrderViewModel order)
+        public IActionResult Create()
         {
             if (ModelState.IsValid)
             {
-                //_context.Add(order);
-                //await _context.SaveChangesAsync();
-                //order = await orderRepo.Add(order);
+                var newOrder = CreateOrder();
+                var model = new OrderDetailsViewModel
+                { 
+                     OrderId = newOrder.OrderId
+                };
 
-                return RedirectToAction(nameof(Index));
+                //Clear the session information
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "SelectedStore", null);
+                SessionHelper.SetObjectAsJson(HttpContext.Session, "cart", null);
+
+                return RedirectToAction(nameof(OrderDetails), model);
             }
-            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
-            return View(order);
+            return RedirectToAction(nameof(Create));
+        }
+
+        private Order CreateOrder()
+        {
+            var customer = SessionHelper.GetObjectFromJson<Customer>(HttpContext.Session, "Customer");
+            var storeId = SessionHelper.GetObjectFromJson<int?>(HttpContext.Session, "SelectedStore");
+            var cart = SessionHelper.GetObjectFromJson<List<LineItemViewModel>>(HttpContext.Session, "cart");
+            List<OrderDetails> details = new List<OrderDetails>();
+            foreach (var item in cart)
+            {
+                item.OrderDetails.Product = null;
+                details.Add(item.OrderDetails);
+            }
+
+            var order = new Order
+            {
+                CusomerId = customer.CustomerId,
+                Customer = null,
+                StoreId = storeId.Value,
+                Store = null,//_unitOfWork.StoreRepository.Get(storeId).Result,
+                ProductsOrdered = details,
+                OrderDateTime = DateTime.Now
+            };
+
+            order = _unitOfWork.OrderRepository.Add(order).Result;
+
+            return order;
         }
 
         private void AddProductToOrder(int SelectedProduct, int SelectedQuantity)
         {
-            var product = productRepo.Get(SelectedProduct).Result;
+            var product = _unitOfWork.ProductRepository.Get(SelectedProduct).Result;
 
             var cart = SessionHelper.GetObjectFromJson<List<LineItemViewModel>>(HttpContext.Session, "cart");
 
@@ -198,14 +227,14 @@ namespace RevatureP1.Web.Controllers
                 return NotFound();
             }
 
-            var order = await orderRepo.Get(id);//_context.Orders.FindAsync(id);
+            var order = await _unitOfWork.OrderRepository.Get(id);//_context.Orders.FindAsync(id);
 
             if (order == null)
             {
                 return NotFound();
             }
-            ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
+            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
+            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
             return View(order);
         }
 
@@ -225,7 +254,7 @@ namespace RevatureP1.Web.Controllers
             {
                     //_context.Update(order);
                     //await _context.SaveChangesAsync();
-                    order = await orderRepo.Update(order);
+                    order = await _unitOfWork.OrderRepository.Update(order);
                 /*
                 try
                 {
@@ -245,8 +274,8 @@ namespace RevatureP1.Web.Controllers
                 */
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
-            ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
+            //ViewData["CusomerId"] = new SelectList(customerRepo.All().Result, "CustomerId", "CustomerId", order.CusomerId);
+            //ViewData["StoreId"] = new SelectList(storeRepo.All().Result, "StoreId", "StoreId", order.StoreId);
             return View(order);
         }
 
@@ -262,7 +291,7 @@ namespace RevatureP1.Web.Controllers
             //    .Include(o => o.Customer)
             //    .Include(o => o.Store)
             //    .FirstOrDefaultAsync(m => m.OrderId == id);
-            var order = await orderRepo.Get(id);
+            var order = await _unitOfWork.OrderRepository.Get(id);
 
             if (order == null)
             {
@@ -280,7 +309,7 @@ namespace RevatureP1.Web.Controllers
             //var order = await _context.Orders.FindAsync(id);
             //_context.Orders.Remove(order);
             //await _context.SaveChangesAsync();
-            await orderRepo.Delete(id);
+            await _unitOfWork.OrderRepository.Delete(id);
 
             return RedirectToAction(nameof(Index));
         }

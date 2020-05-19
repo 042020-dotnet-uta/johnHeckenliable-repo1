@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Revaturep1.Domain.Interfaces;
+using RevatureP1.Domain.Interfaces;
 using RevatureP1.Models;
 using RevatureP1.Web.Helpers;
 using System.Collections.Generic;
@@ -15,10 +16,10 @@ namespace RevatureP1.Web.Controllers
 {
     public class LoginController : Controller
     {
-        private readonly IRepository<Customer> customerRepo;
-        public LoginController(IRepository<Customer> customerRepo) 
+        private readonly IUnitOfWork _unitOfWork;
+        public LoginController(IUnitOfWork unitOfWork) 
         {
-            this.customerRepo = customerRepo;
+            this._unitOfWork = unitOfWork;
         }
 
         [HttpGet]
@@ -32,7 +33,7 @@ namespace RevatureP1.Web.Controllers
         {
             if (ModelState.IsValid)
             {
-                var cust = customerRepo.Find(cust => cust.Email == email).Result.FirstOrDefault();
+                var cust = _unitOfWork.CustomerRepository.Find(cust => cust.Email == email).Result.FirstOrDefault();
 
                 if (cust != null)
                 {
@@ -57,7 +58,7 @@ namespace RevatureP1.Web.Controllers
             {
                 if (user != null)
                 {
-                    var cust = await customerRepo.Add(user);
+                    var cust = await _unitOfWork.CustomerRepository.Add(user);
 
                     CreateClaimIdentity(user.Email);
                     AddUserToSession(cust);

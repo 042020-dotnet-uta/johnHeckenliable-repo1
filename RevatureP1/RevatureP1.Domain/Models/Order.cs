@@ -16,11 +16,11 @@ namespace RevatureP1.Models
 
 		[ForeignKey("Customer")]
 		public int CusomerId { get; set; }
-		public Customer Customer { get; set; }
+		public virtual Customer Customer { get; set; }
 
 		[ForeignKey("Store")]
 		public int StoreId { get; set; }
-		public Store Store { get; set; }
+		public virtual Store Store { get; set; }
 
 		[Display(Name = "Order Date")]
 		[Required, DataType(DataType.Date)]
