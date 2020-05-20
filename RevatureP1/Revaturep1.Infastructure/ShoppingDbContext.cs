@@ -4,17 +4,34 @@ using System;
 
 namespace Revaturep1.DataAccess
 {
+    /// <summary>
+    /// Context used to access the database
+    /// </summary>
     public class ShoppingDbContext : DbContext
     {
-        public ShoppingDbContext(DbContextOptions<ShoppingDbContext> options)
-            : base(options)
-        {
-        }
+        /// <summary>
+        /// The Customers Table
+        /// </summary>
         public DbSet<Customer> Customers { get; set; }
-        public DbSet<Order> Orders { get; set; }
-        public DbSet<Store> Stores { get; set; }
+        /// <summary>
+        /// The Products Table
+        /// </summary>
         public DbSet<Product> Products { get; set; }
+        /// <summary>
+        /// The Orders Table
+        /// </summary>
+        public DbSet<Order> Orders { get; set; }
+        /// <summary>
+        /// The Order Details/Line Items Table
+        /// </summary>
         public DbSet<OrderDetails> OrderDetails { get; set; }
+        /// <summary>
+        /// The Store Locations Table
+        /// </summary>
+        public DbSet<Store> Stores { get; set; }
+        /// <summary>
+        /// The Store Locatations Inventory Table
+        /// </summary>
         public DbSet<Inventory> StoreInventories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -24,6 +41,11 @@ namespace Revaturep1.DataAccess
 
             modelBuilder.Entity<Inventory>()
                 .HasKey(c => new { c.ProductId, c.StoreId });
+        }
+
+        public ShoppingDbContext(DbContextOptions<ShoppingDbContext> options)
+            : base(options)
+        {
         }
     }
 }

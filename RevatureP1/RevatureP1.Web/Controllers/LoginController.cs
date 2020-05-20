@@ -1,10 +1,7 @@
 ﻿
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
-using Revaturep1.Domain.Interfaces;
 using RevatureP1.Domain.Interfaces;
 using RevatureP1.Models;
 using RevatureP1.Web.Helpers;
@@ -87,6 +84,12 @@ namespace RevatureP1.Web.Controllers
             return View(user);
         }
 
+        /// <summary>
+        /// This method will create the appropriate claims identity
+        /// to be used by the authentication cookie and to limit/grant access
+        /// to the appropriate routes
+        /// </summary>
+        /// <param name="email">The customers email address.</param>
         private async void CreateClaimIdentity(string email)
         {
             var userClaims = new List<Claim>()
@@ -98,6 +101,10 @@ namespace RevatureP1.Web.Controllers
             var userPrincipal = new ClaimsPrincipal(new[] { identity });
             await HttpContext.SignInAsync(userPrincipal);
         }
+        /// <summary>
+        /// The method will add the customer data into the session
+        /// </summary>
+        /// <param name="cust"></param>
         private void AddUserToSession(Customer cust)
         {
             SessionHelper.SetObjectAsJson(HttpContext.Session, "Customer", cust);

@@ -52,27 +52,6 @@ namespace RevatureP1.Tests
             mockRepo.Verify(x => x.CustomerRepository.All(), Times.Once); // verify that the method was called once
         }
 
-        //[Fact]
-        //public async Task CreateNewRedirectsToIndex()
-        //{
-        //    // arrange
-        //    var mockRepo = new Mock<IUnitOfWork>();
-
-        //    //mockRepo.Setup(x => x.Add(new Customer { CustomerId = 1 }))
-        //    //    .ReturnsAsync(new Customer { CustomerId = 1 });
-
-        //    var controller = new CustomersController(mockRepo.Object, null);
-
-        //    // act
-        //    IActionResult result = await controller.CreateNew(new Customer { CustomerId = 1 });
-
-        //    // assert
-        //    // ...that the result is a ViewResult
-        //    var viewResult = Assert.IsAssignableFrom<RedirectToActionResult>(result);
-        //    // ...that the model of the view is a CustomersViewModel
-        //    Assert.Equal("Index", viewResult.ActionName);
-        //}
-
         [Fact]
         public async Task EditRedirectsToIndex()
         {
@@ -105,7 +84,7 @@ namespace RevatureP1.Tests
             var controller = new CustomersController(mockRepo.Object, null);
 
             // act
-            IActionResult result = await controller.DeleteConfirmed(1);
+            IActionResult result = controller.DeleteConfirmed(1);
 
             // assert
             // ...that the result is a ViewResult

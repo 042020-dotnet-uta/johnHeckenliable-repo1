@@ -45,8 +45,8 @@
                                 <!--<option disabled value="">Please select one</option>-->
                                 @foreach (var product in Model.SelectedStore.AvailableProducts)
                                 {
-                                    <option value="@product.ProductId">
-                                        @product.Product.ProductDescription - @product.Product.Price.ToString(System.Globalization.CultureInfo.InvariantCulture)
+                                    <option value="@product.ProductId" >
+                                        @product.Product.ProductDescription @product.Product.Price.ToString("C2")
                                     </option>
                                 }
                             </select>
@@ -78,13 +78,13 @@
                                         <h6 class="my-0">@item.OrderDetails.Product.ProductDescription</h6>
                                         <small class="text-muted">Quantity: @item.OrderDetails.Quantity</small>
                                     </div>
-                                    <span class="text-muted">$@item.Total</span>
+                                    <span class="text-muted">@item.Total.ToString("C2")</span>
                                 </li>
                             }
                         }
                         <li class="list-group-item d-flex justify-content-between">
                             <span>Total (USD)</span>
-                            <strong>$@Model.Total</strong>
+                            <strong>@Model.Total.ToString("C2")</strong>
                         </li>
                     </ul>
                     <br />

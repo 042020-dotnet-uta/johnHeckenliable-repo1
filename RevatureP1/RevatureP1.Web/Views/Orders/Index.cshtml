@@ -46,7 +46,7 @@
                 @Html.DisplayFor(modelItem => item.TotalItems)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TotalSale)
+                @Html.DisplayFor(modelItem => item.TotalSale.ToString("C2"))
             </td>
             <td>
                 <a asp-action="Edit" asp-route-id="@item.Order.OrderId">Edit</a> |
