@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking.Internal;
-using RevatureP1.Domain.Utils;
 using RevatureP1.Models;
 using System;
 using System.Collections.Generic;

@@ -17,7 +17,6 @@ namespace GettingStartedClient
             Console.WriteLine("There are {0} pieces of fruit to start", fruit);
             Console.ReadLine();
 
-
             fruit = client.AddFruit(5);
             Console.WriteLine("There are {0} pieces of fruit left after adding {1} pieces", fruit, 5);
             Console.ReadLine();
@@ -29,7 +28,6 @@ namespace GettingStartedClient
             fruit = client.GetFruit(2);
             Console.WriteLine("There are now {0} pieces of fruit left after getting {1} pieces", fruit, 2);
             Console.ReadLine();
-
 
             client.Close();
         }
