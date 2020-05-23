@@ -1,0 +1,49 @@
+# ASP.NET Core (.NET Framework)
+# Build and test ASP.NET Core projects targeting the full .NET Framework.
+# Add steps that publish symbols, save build artifacts, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
+
+trigger:
+- master
+
+pool:
+  vmImage: 'unbuntu-latest'
+
+pr: 'none'
+
+stages:
+  - stage:
+    jobs:
+      - job: 'build'
+        steps:
+          - task: SonarCloudPrepare@1
+            inputs:
+              SonarCloud: 'johnHeckenliable_p1'
+              organization: 'neworganization4949'
+              scannerMode: 'MSBuild'
+              projectKey: 'fa3133fc560d71d9de22a7b2a99a53a0d2ee03ff'
+              extraProperties: |
+                sonar.exclusions=**/obj/**,**/*.dll
+                sonar.branch.name=$(Build.SourceBranchName)
+                sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
+                sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/*.xml
+          - script: dotnet build '**/RevatureP1.sln'
+          - script: echo 'Project Build'
+
+          - task: DotNetCoreCLI@2
+            displayName: 'dotnet test'
+            inputs:
+             command: 'test'
+             arguments: '--configuration $(BuildConfiguration) 
+                /p:CollectCoverage=true 
+                /p:CoverletOutputFormat=opencover 
+                /p:Coverletoutput=$(Build.SourcesDirector)/TestResults/Coverage
+                --logger trx'
+             projects: '**/RevatureP1.Tests.csproj'
+             nobuild: true
+          - script: excho 'Tests Run'
+          - task: SonarCloudAnalyze@1
+          - task: SonarCloudPublish@1
+            inputs:
+              pollingTimeoutSec: '300'
+          - script: dotnet publish '**/RevatureP1.sln'
