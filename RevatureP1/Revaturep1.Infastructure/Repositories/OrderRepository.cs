@@ -26,6 +26,7 @@ namespace Revaturep1.DataAccess.Repositories
                     throw new ArgumentOutOfRangeException($"Not enough inventory for product with ID {item.ProductId}");
             }
 
+            #region Decrement Inventory
             //add the order to the db
             _context.Add(order);
             //decrement the appropriate inventories
@@ -33,8 +34,9 @@ namespace Revaturep1.DataAccess.Repositories
             {
                 UpdateLocationQuantity(order.StoreId, item.ProductId, (item.Quantity * -1));
             }
+            #endregion
+
             await _context.SaveChangesAsync();
-            //return the order (filled in with order id)
             return order;
         }
 

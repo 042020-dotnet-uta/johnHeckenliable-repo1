@@ -125,6 +125,7 @@ namespace RevatureP1.Web.Controllers
                 try
                 {
                     var newOrder = CreateOrder();
+
                     var model = new OrderDetailsViewModel
                     {
                         OrderId = newOrder.OrderId
@@ -134,8 +135,9 @@ namespace RevatureP1.Web.Controllers
 
                     return RedirectToAction(nameof(OrderDetails), model);
                 }
-                catch (ArgumentOutOfRangeException)
+                catch (ArgumentOutOfRangeException auex)
                 {
+                    _logger.LogError(auex, "Unable to complete the order.");
                     return RedirectToAction(nameof(Create));
                 }
             }
