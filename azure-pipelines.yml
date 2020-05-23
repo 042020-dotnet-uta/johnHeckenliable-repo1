@@ -27,7 +27,7 @@ stages:
                 sonar.branch.name=$(Build.SourceBranchName)
                 sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
                 sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/*.xml
-          - script: dotnet build '**/RevatureP1.sln'
+          - script: dotnet build 'RevatureP1/RevatureP1.sln'
           - script: echo 'Project Build'
 
           - task: DotNetCoreCLI@2
@@ -39,7 +39,7 @@ stages:
                 /p:CoverletOutputFormat=opencover 
                 /p:Coverletoutput=$(Build.SourcesDirector)/TestResults/Coverage
                 --logger trx'
-             projects: '**/RevatureP1.Tests.csproj'
+             projects: '**/*RevatureP1.Tests.csproj'
              nobuild: true
           - script: excho 'Tests Run'
           - task: SonarCloudAnalyze@1
