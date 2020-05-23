@@ -37,9 +37,9 @@ stages:
              arguments: '--configuration $(BuildConfiguration) 
                 /p:CollectCoverage=true 
                 /p:CoverletOutputFormat=opencover 
-                /p:Coverletoutput=$(Build.SourcesDirector)/TestResults/Coverage
+                /p:Coverletoutput=$(Build.SourcesDirector)/TestResults/Coverage 
                 --logger trx'
-             projects: '**/*RevatureP1.Tests.csproj'
+             projects: 'RevetaureP1/RevatureP1.Tests/RevatureP1.Tests.csproj'
              nobuild: true
           - script: excho 'Tests Run'
           - task: SonarCloudAnalyze@1
