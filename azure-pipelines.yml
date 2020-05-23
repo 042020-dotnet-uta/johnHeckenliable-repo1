@@ -37,10 +37,9 @@ stages:
                 /p:CoverletOutputFormat=opencover 
                 /p:Coverletoutput=$(Build.SourcesDirector)/TestResults/Coverage 
                 --logger trx'
-             projects: 'RevetaureP1/RevatureP1.Tests/RevatureP1.Tests.csproj'
+             projects: 'RevatureP1/RevatureP1.Tests/RevatureP1.Tests.csproj'
              nobuild: true
           - task: SonarCloudAnalyze@1
           - task: SonarCloudPublish@1
             inputs:
               pollingTimeoutSec: '300'
-          - script: dotnet publish '**/RevatureP1.sln'
