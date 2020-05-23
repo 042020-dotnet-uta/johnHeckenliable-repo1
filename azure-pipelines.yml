@@ -28,8 +28,6 @@ stages:
                 sonar.cs.vstest.reportsPaths=$(Agent.TempDirectory)/*.trx
                 sonar.cs.opencover.reportsPaths=$(Build.SourcesDirectory)/**/*.xml
           - script: dotnet build 'RevatureP1/RevatureP1.sln'
-          - script: echo 'Project Build'
-
           - task: DotNetCoreCLI@2
             displayName: 'dotnet test'
             inputs:
@@ -41,7 +39,6 @@ stages:
                 --logger trx'
              projects: 'RevetaureP1/RevatureP1.Tests/RevatureP1.Tests.csproj'
              nobuild: true
-          - script: excho 'Tests Run'
           - task: SonarCloudAnalyze@1
           - task: SonarCloudPublish@1
             inputs:
