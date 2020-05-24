@@ -41,22 +41,10 @@ stages:
             zipAfterPublish: false
         - publish: '$(Build.ArtifactStagingDirectory)'
           artifact: 'app'
-  - stage: 'deploy'
-    dependsOn: 'build'
-    jobs:
-      - deployment: 'deploy_dev'
-        pool:
-          vmImage: 'windows-latest'
-        environment: dev
-        strategy:
-          runOnce:
-            deploy:
-              steps:
-                - task: AzureRmWebAppDeployment@4
-                  displayName: 'Azure App Service Deploy: MyApp1111'
-                  inputs:
-                    ConnectionType: 'AzureRM'
-                    azureSubscription: 'Free Trial (f4c13e81-6cbe-4949-ab59-f130a8a40d47)'
-                    appType: 'webApp'
-                    WebAppName: MyApp1111
-                    packageForLinux: '$(Pipeline.Workspace)/app'
+        - task: AzureRmWebAppDeployment@4
+          inputs:
+            ConnectionType: 'AzureRM'
+            azureSubscription: 'Free Trial(f4c13e81-6cbe-4949-ab59-f130a8a40d47)'
+            appType: 'webApp'
+            WebAppName: 'MyApp1111'
+            packageForLinux: '$(Pipeline.Workspace)/app'
