@@ -15,6 +15,7 @@ namespace RevatureP1.Tests
 {
     public class CustomerControllerTests
     {
+        /*
         [Fact]
         public async Task IndexShouldReturnViewWithData()
         {
@@ -92,5 +93,6 @@ namespace RevatureP1.Tests
             // ...that the model of the view is a CustomersViewModel
             Assert.Equal("Index", viewResult.ActionName);
         }
+        */
     }
 }
