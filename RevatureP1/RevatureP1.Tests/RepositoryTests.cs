@@ -12,28 +12,9 @@ using RevatureP1.DataAccess.Repositories;
 
 namespace RevatureP1.Tests
 {
-    /*
+    
     public class RepositoryTests
     {
-        //private readonly IRepository<Order> orderRepo;
-        //private readonly IRepository<Product> productRepo;
-        //private readonly IRepository<Customer> customerRepo;
-        //private readonly IRepository<Store> storeRepo;
-        //private readonly IRepository<Inventory> inventoryRepo;
-
-        //public StoreBackend_Tests(IRepository<Order> orderRepo,
-        //    IRepository<Product> productRepo,
-        //    IRepository<Customer> customerRepo,
-        //    IRepository<Store> storeRepo,
-        //    IRepository<Inventory> inventoryRepo)
-        //{
-        //    this.orderRepo = orderRepo;
-        //    this.productRepo = productRepo;
-        //    this.customerRepo = customerRepo;
-        //    this.storeRepo = storeRepo;
-        //    this.inventoryRepo = inventoryRepo;
-        //}
-
         [Fact]
         public async void AddsCustomerToDb()
         {
@@ -718,5 +699,5 @@ namespace RevatureP1.Tests
                 .Options;
         }
     }
-    */
+    
 }
