@@ -12,6 +12,7 @@ using RevatureP1.DataAccess.Repositories;
 
 namespace RevatureP1.Tests
 {
+    /*
     public class RepositoryTests
     {
         //private readonly IRepository<Order> orderRepo;
@@ -717,4 +718,5 @@ namespace RevatureP1.Tests
                 .Options;
         }
     }
+    */
 }
